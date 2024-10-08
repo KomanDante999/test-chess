@@ -1,0 +1,19 @@
+:root {
+	--screen-mobil: 375px;
+	--screen-tablet: 1366px;
+	--screen-desktop: 1920px;
+}
+
+.container {}
+
+
+
+@media (min-width: 640px) {}
+
+@media (min-width: 768px) {}
+
+@media (min-width: 1024px) {}
+
+@media (min-width: 1280px) {}
+
+@media (min-width: 1536px) {}
