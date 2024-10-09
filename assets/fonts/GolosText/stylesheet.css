@@ -33,7 +33,7 @@
 	src: local('Golos Text Bold'), local('GolosText-Bold'),
 		url('GolosText-Bold.woff2') format('woff2'),
 		url('GolosText-Bold.woff') format('woff');
-	font-weight: bold;
+	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
 }
@@ -43,7 +43,7 @@
 	src: local('Golos Text Regular'), local('GolosText-Regular'),
 		url('GolosText-Regular.woff2') format('woff2'),
 		url('GolosText-Regular.woff') format('woff');
-	font-weight: normal;
+	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }

@@ -1,13 +1,57 @@
 :root {
-	--screen-mobil: 375px;
-	--screen-tablet: 1366px;
-	--screen-desktop: 1920px;
+	--text-font: 'Golos Text';
+	--text-base: 20px;
+	--text-space-base: 120%;
+	--text-color: #313131;
+	--title-font: 'Merriweather';
+	--title-color: #313131;
+	--title-L: 60px;
+	--title-M: 54px;
+	--title-S: 36px;
 }
 
-.container {}
+.body {
+	font-family: var(--font-text);
+	font-size: var(--text-base);
+	line-height: var(--text-space-base);
+}
+
+.container {
+	max-width: 1920px;
+	padding-left: 158px;
+	padding-right: 158px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.hero {}
+
+.hero__content {
+	padding-top: 26px;
+}
+
+.hero__logo {
+	width: fit-content;
+	height: 36px;
+	display: flex;
+	align-items: center;
+}
+
+.hero__logo-img {
+	margin-right: 15px;
+}
+
+.hero__logo-text {
+	font-size: 16.65px;
+	line-height: 108%;
+	font-weight: 700;
+	color: #595653;
+	text-transform: uppercase;
+}
 
 
 
+/*  */
 @media (min-width: 640px) {}
 
 @media (min-width: 768px) {}
