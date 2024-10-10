@@ -1,5 +1,7 @@
 :root {
 	--text-font: 'Golos Text';
+	--text-ss: 16px;
+	--text-s: 18px;
 	--text-base: 20px;
 	--text-space-base: 120%;
 	--text-color: #313131;
@@ -13,6 +15,7 @@
 .body {
 	font-family: var(--font-text);
 	font-size: var(--text-base);
+	font-weight: 400;
 	line-height: var(--text-space-base);
 }
 
@@ -24,9 +27,41 @@
 	margin-right: auto;
 }
 
+.btn {
+	width: 263px;
+	padding: 20px;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 66px;
+	border-color: transparent;
+	font-size: var(--text-ss);
+
+}
+
+.btn__prim {
+	color: #fff;
+	background-color: #1f1f1f;
+}
+
+.btn__second {
+	color: #1f1f1f;
+	border-color: #1f1f1f;
+}
+
+
+.title {
+	font-family: var(--title-font);
+	font-weight: 400;
+	line-height: 110%;
+	color: var(--title-color);
+	text-transform: uppercase;
+}
+
+/* HERO */
 .hero {}
 
 .hero__content {
+	max-width: 542px;
 	padding-top: 26px;
 }
 
@@ -35,6 +70,7 @@
 	height: 36px;
 	display: flex;
 	align-items: center;
+	margin-bottom: 62px;
 }
 
 .hero__logo-img {
@@ -49,6 +85,30 @@
 	text-transform: uppercase;
 }
 
+.hero__title {
+	font-size: var(--title-L);
+	margin-bottom: 24px;
+}
+
+.hero__title_center {
+	display: block;
+	text-align: center;
+}
+
+.hero__title_right {
+	display: block;
+	text-align: right;
+}
+
+.hero__description {
+	display: block;
+	font-size: var(--text-s);
+	align-items: 130%;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.hero__buttons {}
 
 
 /*  */
