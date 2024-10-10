@@ -28,14 +28,22 @@
 }
 
 .btn {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex-grow: 0;
+	flex-shrink: 0;
 	width: 263px;
-	padding: 20px;
+	padding: 10px 20px;
 	border-width: 2px;
 	border-style: solid;
 	border-radius: 66px;
 	border-color: transparent;
 	font-size: var(--text-ss);
-
+	text-align: center;
+	transition-property: color, background-color, border-color;
+	transition-duration: 0.5s;
+	transition-timing-function: ease-in-out;
 }
 
 .btn__prim {
@@ -43,9 +51,20 @@
 	background-color: #1f1f1f;
 }
 
+.hasHover .btn__prim:hover {
+	color: #1f1f1f;
+	background-color: #FBCE51;
+}
+
+
 .btn__second {
 	color: #1f1f1f;
 	border-color: #1f1f1f;
+}
+
+.hasHover .btn__second:hover {
+	color: #fff;
+	background-color: #1f1f1f;
 }
 
 
@@ -58,7 +77,13 @@
 }
 
 /* HERO */
-.hero {}
+.hero {
+	background-image: url(../img/hero/bg-1920.png);
+	background-color: #E9DED4;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
 
 .hero__content {
 	max-width: 542px;
