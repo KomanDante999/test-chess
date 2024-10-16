@@ -28,40 +28,68 @@
 </head>
 
 <body class="body">
-	<main>
-		<section class="hero">
+	<div class="wrap-top">
+		<header class="header">
 			<div class="container">
+				<div class="logo">
+					<picture class="logo__img">
+						<source media="(max-width: 800px)" srcset="./assets/img/hero/logo-375.webp">
+						<img src="./assets/img/hero/logo.webp" alt="четырех коня">
+					</picture>
+					<span class="logo__text">Клуб <br> четырех коней</span>
+				</div>
+			</div>
+		</header>
+		<section class="hero">
+			<div class="container hero__container">
 				<div class="hero__content">
-					<div class="hero__logo">
-						<picture class="hero__logo-img">
-							<source media="(max-width: 375px)" srcset="./assets/img/hero/logo-375.webp">
-							<img src="./assets/img/hero/logo.webp" alt="четырех коня">
-						</picture>
-						<span class="hero__logo-text">Клуб <br> четырех коней</span>
-					</div>
 					<h1 class="hero__title title">
 						Превратите уездный город
 						<span class="hero__title_center">в столицу</span>
 						<span class="hero__title_right">земного шара</span>
-
-
 					</h1>
-					<p class="hero__description">Оплатите взнос на телеграммы для организации Международного васюкинского турнира
+					<p class="hero__description">Оплатите взнос на телеграммы для организации Международного васюкинского
+						турнира
 						по шахматам</p>
-					<div class="hero__buttons">
-						<a class="btn btn__prim" href="#supportChess">
-							<span>Поддержать</span>
-							<span>шахматную мысль</span>
-						</a>
-						<a class="btn btn__second" href="#aboutTournament">
-							<span>Подробнее</span>
-							<span>о турнире</span>
-						</a>
+					<ul class="hero__buttons">
+						<li>
+							<a class="btn btn__prim hero__btn" href="#supportChess">
+								<span>Поддержать</span>
+								<span>шахматную мысль</span>
+							</a>
+						</li>
+						<li>
+							<a class="btn btn__second hero__btn hero__btn_second" href="#aboutTournament">
+								<span>Подробнее</span>
+								<span>о турнире</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+	</div>
+	<main>
+		<section id="kdRunline" class="running-line">
+			<div class="running-line__row">
+				<div data-kd-runline-item="0" class="running-line__item">
+					<div class="running-line__contant">
+						Дело помощи утопающим — дело рук самих утопающих!
+
+					</div>
+				</div>
+				<div data-kd-runline-item="1" class="running-line__item">
+					<div class="running-line__contant">
+						Шахматы двигают вперед не только культуру, но и экономику!
+					</div>
+				</div>
+				<div data-kd-runline-item="2" class="running-line__item">
+					<div class="running-line__contant">
+						Лед тронулся, господа присяжные заседатели!
 					</div>
 				</div>
 			</div>
 		</section>
-		<section></section>
 		<section></section>
 		<section></section>
 	</main>
