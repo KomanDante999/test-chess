@@ -20,7 +20,16 @@ export class KdRunLine {
 
 			window.addEventListener('load', () => {
 				this.currentNumber = 0
-				this.doAnimation()
+				console.log('elem', this.items[0].elem);
+				this.animateTest({
+					duration: 5000,
+					timing: function (timeFraction) {
+						return timeFraction
+					},
+					elem: this.items[0].elem,
+				})
+
+				// this.doAnimation()
 			})
 
 
@@ -31,9 +40,30 @@ export class KdRunLine {
 		this.items.forEach(item => {
 			item.elem.style.top = '0px'
 			item.elem.style.left = `-${item.with}px`
-			item.elem.style.opacity = '0'
+			// item.elem.style.opacity = '0'
 			item.elem.style.transitionProperty = 'transform'
 			item.elem.style.transitionTimingFunction = 'linear'
+		})
+	}
+
+	animateTest({ duration, timing, elem, }) {
+		let start = performance.now()
+		console.log('start', start);
+
+		requestAnimationFrame(function animation(time) {
+			let timeFraction = (time - start) / duration
+			if (timeFraction > 1) {
+				timeFraction = 1
+			}
+
+			let progress = timing(timeFraction)
+			console.log('progress', progress);
+			elem.style.transform = `translateX(${progress * 100}px)`
+
+			if (timeFraction < 1) {
+				requestAnimationFrame(animation)
+			}
+
 		})
 	}
 
@@ -59,6 +89,8 @@ export class KdRunLine {
 			}
 		}, 5000);
 	}
+
+
 
 
 	get viewportW() {
