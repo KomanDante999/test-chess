@@ -1,5 +1,6 @@
 export class KdRunLine {
 	_viewportW = null
+	_currentItem = 0
 
 	constructor(params) {
 		this.$RunLine = document.getElementById(params.id)
@@ -19,16 +20,16 @@ export class KdRunLine {
 
 			window.addEventListener('load', () => {
 				this.startSet()
-				this.currentNumber = 0
+
+
 				this.animateTest({
-					duration: 10000,
 					timing: function (timeFraction) {
 						return timeFraction
 					},
-					arrItems: this.items,
+					item: this.items[0],
+					currentItem: this.currentItem,
 				})
 
-				// this.doAnimation()
 			})
 
 
@@ -47,62 +48,39 @@ export class KdRunLine {
 		})
 	}
 
-	animateTest({ duration, timing, arrItems, }) {
-		let start = performance.now()
-		console.log('arrItems :>> ', arrItems);
+	animateTest({ timing, item, }) {
 
 		requestAnimationFrame(function animation(time) {
-			let timeFraction = (time - start) / duration
-			if (timeFraction > 1) {
-				timeFraction = 1
-			}
 
-			let progress = timing(timeFraction)
-			arrItems[0].elem.style.transform = `translateX(${progress * 2000}px)`
+			let progress = timing(time * 0.000001)
+			item.elem.style.transform = `translateX(${progress * 100000}px)`
 			// console.log('progress', progress);
-			// console.log('x', arrItems[0].elem.getBoundingClientRect().x);
-			if (arrItems[0].elem.getBoundingClientRect().x > 0) {
+			// console.log('x', item.elem.getBoundingClientRect().x);
 
+			if (item.elem.getBoundingClientRect().x > 0) {
+				this.nextItem()
 			}
-
-			if (timeFraction < 1) {
-				requestAnimationFrame(animation)
-			}
-
+			requestAnimationFrame(animation)
 		})
 	}
 
-	doAnimation() {
-		console.log('int', this.currentNumber);
-		this.items[this.currentNumber].elem.style.opacity = '1'
-		this.items[this.currentNumber].elem.style.transitionDuration = '5s'
-		this.items[this.currentNumber].elem.style.transform = `translateX(${this.items[this.currentNumber].width}px)`
-		if (this.currentNumber > 0) {
-			this.items[this.currentNumber - 1].elem.style.transitionDuration = '7s'
-			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].width + this.viewportW}px)`
-		}
-		if (this.currentNumber > 0) {
-			this.items[this.currentNumber - 1].elem.style.transitionDuration = '7s'
-			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].width + this.viewportW}px)`
-		}
-
-		setTimeout(() => {
-			if (this.currentNumber < this.items.length - 1) {
-				this.currentNumber++;
-				console.log('out', this.currentNumber);
-				this.doAnimation()
-			}
-		}, 5000);
+	nextItem() {
+		this.currentItem = this.currentItem + 1
+		console.log('this.currentItem', this.currentItem);
 	}
-
-
-
 
 	get viewportW() {
 		return window.innerWidth
 	}
 	set viewportW(value) {
 		this._viewportW = value
+	}
+
+	get currentItem() {
+		return this._currentItem
+	}
+	set currentItem(value) {
+		this._currentItem = value
 	}
 
 }
