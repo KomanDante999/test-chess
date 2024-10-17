@@ -11,22 +11,21 @@ export class KdRunLine {
 				this.items.push({
 					elem: item,
 					num: Number(item.dataset.kdRunlineItem),
-					with: item.offsetWidth,
+					width: item.getBoundingClientRect().width,
 				})
 			})
 
 			// events
-			this.startSet()
 
 			window.addEventListener('load', () => {
+				this.startSet()
 				this.currentNumber = 0
-				console.log('elem', this.items[0].elem);
 				this.animateTest({
-					duration: 5000,
+					duration: 10000,
 					timing: function (timeFraction) {
 						return timeFraction
 					},
-					elem: this.items[0].elem,
+					arrItems: this.items,
 				})
 
 				// this.doAnimation()
@@ -38,17 +37,19 @@ export class KdRunLine {
 
 	startSet() {
 		this.items.forEach(item => {
+			item.width = item.elem.getBoundingClientRect().width
+			console.log(item.width);
 			item.elem.style.top = '0px'
-			item.elem.style.left = `-${item.with}px`
+			item.elem.style.left = `-${item.width}px`
 			// item.elem.style.opacity = '0'
-			item.elem.style.transitionProperty = 'transform'
-			item.elem.style.transitionTimingFunction = 'linear'
+			// item.elem.style.transitionProperty = 'transform'
+			// item.elem.style.transitionTimingFunction = 'linear'
 		})
 	}
 
-	animateTest({ duration, timing, elem, }) {
+	animateTest({ duration, timing, arrItems, }) {
 		let start = performance.now()
-		console.log('start', start);
+		console.log('arrItems :>> ', arrItems);
 
 		requestAnimationFrame(function animation(time) {
 			let timeFraction = (time - start) / duration
@@ -57,8 +58,12 @@ export class KdRunLine {
 			}
 
 			let progress = timing(timeFraction)
-			console.log('progress', progress);
-			elem.style.transform = `translateX(${progress * 100}px)`
+			arrItems[0].elem.style.transform = `translateX(${progress * 2000}px)`
+			// console.log('progress', progress);
+			// console.log('x', arrItems[0].elem.getBoundingClientRect().x);
+			if (arrItems[0].elem.getBoundingClientRect().x > 0) {
+
+			}
 
 			if (timeFraction < 1) {
 				requestAnimationFrame(animation)
@@ -71,14 +76,14 @@ export class KdRunLine {
 		console.log('int', this.currentNumber);
 		this.items[this.currentNumber].elem.style.opacity = '1'
 		this.items[this.currentNumber].elem.style.transitionDuration = '5s'
-		this.items[this.currentNumber].elem.style.transform = `translateX(${this.items[this.currentNumber].with}px)`
+		this.items[this.currentNumber].elem.style.transform = `translateX(${this.items[this.currentNumber].width}px)`
 		if (this.currentNumber > 0) {
 			this.items[this.currentNumber - 1].elem.style.transitionDuration = '7s'
-			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].with + this.viewportW}px)`
+			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].width + this.viewportW}px)`
 		}
 		if (this.currentNumber > 0) {
 			this.items[this.currentNumber - 1].elem.style.transitionDuration = '7s'
-			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].with + this.viewportW}px)`
+			this.items[this.currentNumber - 1].elem.style.transform = `translateX(${this.items[this.currentNumber].width + this.viewportW}px)`
 		}
 
 		setTimeout(() => {

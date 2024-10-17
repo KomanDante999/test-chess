@@ -181,6 +181,7 @@
 }
 
 .running-line__item {
+	width: max-content;
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -190,12 +191,14 @@
 }
 
 .running-line__contant {
+	flex-shrink: 0;
+	flex-grow: 0;
+	flex-wrap: nowrap;
 	font-family: var(--title-font);
 	font-size: var(--text-m);
 	line-height: 110%;
 	color: var(--text-color-rew);
 	text-transform: uppercase;
-
 }
 
 /*  */
