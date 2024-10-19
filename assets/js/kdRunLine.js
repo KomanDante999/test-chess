@@ -1,6 +1,5 @@
 export class KdRunLine {
 	_viewportW = null
-	_currentItem = 0
 
 	constructor(params) {
 		this.$RunLine = document.getElementById(params.id)
@@ -13,6 +12,8 @@ export class KdRunLine {
 					elem: item,
 					num: Number(item.dataset.kdRunlineItem),
 					width: item.getBoundingClientRect().width,
+					draw: 0,
+					move: false,
 				})
 			})
 
@@ -20,16 +21,7 @@ export class KdRunLine {
 
 			window.addEventListener('load', () => {
 				this.startSet()
-
-
-				this.animateTest({
-					timing: function (timeFraction) {
-						return timeFraction
-					},
-					item: this.items[0],
-					currentItem: this.currentItem,
-				})
-
+				this.animateTest(this.items)
 			})
 
 
@@ -42,31 +34,44 @@ export class KdRunLine {
 			console.log(item.width);
 			item.elem.style.top = '0px'
 			item.elem.style.left = `-${item.width}px`
-			// item.elem.style.opacity = '0'
-			// item.elem.style.transitionProperty = 'transform'
-			// item.elem.style.transitionTimingFunction = 'linear'
 		})
 	}
 
-	animateTest({ timing, item, }) {
+	animateTest(items) {
+		let curItem = 0
+		const viewportW = this.viewportW
 
-		requestAnimationFrame(function animation(time) {
+		requestAnimationFrame(function animationId() {
 
-			let progress = timing(time * 0.000001)
-			item.elem.style.transform = `translateX(${progress * 100000}px)`
-			// console.log('progress', progress);
-			// console.log('x', item.elem.getBoundingClientRect().x);
+			items.forEach(item => {
+				// condition start 
+				if (item.num == curItem) {
+					item.move = true
+				}
+				// driver
+				if (item.move) {
+					item.draw = item.draw + 2
+					item.elem.style.transform = `translateX(${item.draw}px)`
+				}
 
-			if (item.elem.getBoundingClientRect().x > 0) {
-				this.nextItem()
-			}
-			requestAnimationFrame(animation)
+				// condition next item
+				if (Math.trunc(item.elem.getBoundingClientRect().x) == 0) {
+					if (curItem < items.length - 1) {
+						curItem = curItem + 1
+					} else {
+						curItem = 0
+					}
+				}
+				// condition break
+				if (item.elem.getBoundingClientRect().x > viewportW) {
+					item.draw = 0
+					item.move = false
+					item.elem.style.transform = `translateX(0px)`
+				}
+			})
+
+			requestAnimationFrame(animationId)
 		})
-	}
-
-	nextItem() {
-		this.currentItem = this.currentItem + 1
-		console.log('this.currentItem', this.currentItem);
 	}
 
 	get viewportW() {
@@ -74,13 +79,6 @@ export class KdRunLine {
 	}
 	set viewportW(value) {
 		this._viewportW = value
-	}
-
-	get currentItem() {
-		return this._currentItem
-	}
-	set currentItem(value) {
-		this._currentItem = value
 	}
 
 }

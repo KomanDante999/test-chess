@@ -190,15 +190,23 @@
 	align-items: center;
 }
 
-.running-line__contant {
+.running-line__content {
 	flex-shrink: 0;
 	flex-grow: 0;
 	flex-wrap: nowrap;
+	padding: 6px;
 	font-family: var(--title-font);
 	font-size: var(--text-m);
 	line-height: 110%;
 	color: var(--text-color-rew);
 	text-transform: uppercase;
+}
+
+.running-line__decor {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background-color: var(--text-color-rew);
 }
 
 /*  */
