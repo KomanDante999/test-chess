@@ -3,11 +3,12 @@ import { KdRunLine } from "./assets/js/kdRunLine.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
-	watchForHover()
 
 	const paramsKdRunLine = {
 		id: 'kdRunline',
+		speedAnimation: 2.1,
 	}
 
-	new KdRunLine(paramsKdRunLine)
+	watchForHover()  // отслеживание метода ввода: курсор или тап
+	new KdRunLine(paramsKdRunLine)  // бегущая строка
 })
