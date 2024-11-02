@@ -289,3 +289,7 @@ video {
 	max-width: 100%;
 	height: auto;
 }
+
+button:focus-visible {
+	outline: none;
+}
