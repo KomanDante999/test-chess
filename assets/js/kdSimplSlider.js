@@ -30,7 +30,6 @@ export class KdSimplSlider {
 					console.log('enable');
 					this.cleanView()
 					this.cleanModel()
-					// this.setModelDef(params)
 					this.setModel()
 					this.setView()
 				}
@@ -39,7 +38,6 @@ export class KdSimplSlider {
 					console.log('clean');
 					this.cleanView()
 					this.cleanModel()
-					this.setModelDef(params)
 				}
 
 				console.log(this.model);
@@ -128,50 +126,55 @@ export class KdSimplSlider {
 			}
 		})
 		this.model.mediaRange.sort((a, b) => b.maxWidth - a.maxWidth)
-
+		// add elements
+		this.raw = Array.from(this.$Slider.querySelectorAll('[data-kd-slider]'))
+		this.raw.forEach(elem => {
+			if (elem.dataset.kdSlider == 'wrap') {
+				this.model.wrap.node = elem
+			}
+			if (elem.dataset.kdSlider == 'card') {
+				this.model.cards.push({
+					node: elem,
+					order: null,
+					position: null,
+					isChange: false,
+				})
+			}
+			if (this.model.nav.isEnable) {
+				if (elem.dataset.kdSlider == 'next') {
+					this.model.nav.next.push({
+						node: elem,
+						isDisable: false,
+					})
+				}
+				if (elem.dataset.kdSlider == 'prev') {
+					this.model.nav.prev.push({
+						node: elem,
+						isDisable: false,
+					})
+				}
+			}
+			if (this.model.pag.isEnable) {
+				if (elem.dataset.kdSlider == 'pag-wrap') {
+					this.model.pag.wrap.push({
+						node: elem,
+						buttons: [],
+					})
+				}
+			}
+		})
+		// cards
+		this.raw = []
+		this.model.cards.forEach((card, index) => {
+			card.order = index
+		})
+		this.model.card.total = this.model.cards.length
 	}
 
 	setModel() {
-		this.raw = Array.from(this.$Slider.querySelectorAll('[data-kd-slider]'))
+
 		this.model.mediaRange.forEach(point => {
 			if (point.status == 'enable') {
-				// get elements
-				this.raw.forEach(elem => {
-					if (elem.dataset.kdSlider == 'wrap') {
-						this.model.wrap.node = elem
-					}
-					if (elem.dataset.kdSlider == 'card') {
-						this.model.cards.push({
-							node: elem,
-							order: null,
-							position: null,
-							isChange: false,
-						})
-					}
-					if (this.model.nav.isEnable) {
-						if (elem.dataset.kdSlider == 'next') {
-							this.model.nav.next.push({
-								node: elem,
-								isDisable: false,
-							})
-						}
-						if (elem.dataset.kdSlider == 'prev') {
-							this.model.nav.prev.push({
-								node: elem,
-								isDisable: false,
-							})
-						}
-					}
-					if (this.model.pag.isEnable) {
-						if (elem.dataset.kdSlider == 'pag-wrap') {
-							this.model.pag.wrap.push({
-								node: elem,
-								buttons: [],
-							})
-						}
-					}
-				})
-				this.raw = []
 
 				// wrap
 				this.model.wrap.w = this.model.wrap.node.getBoundingClientRect().width
@@ -182,12 +185,8 @@ export class KdSimplSlider {
 				this.model.card.num = point.slides
 				this.model.card.w = Math.round((this.model.wrap.w - this.model.card.space) / this.model.card.num)
 				this.model.card.h = this.model.wrap.h
-				this.model.card.total = this.model.cards.length
 
 				// cards
-				this.model.cards.forEach((card, index) => {
-					card.order = index
-				})
 				this.positionCardModel()
 
 				// nav
@@ -427,7 +426,11 @@ export class KdSimplSlider {
 		this.model.status = 'disable'
 	}
 	cleanModel() {
-		// this.model = {}
+		// clean pag buttons
+		this.model.pag.wrap.forEach((wrap => {
+			wrap.buttons = []
+		}))
+		this.model.card.active = 0
 	}
 
 	get currentViewport() {
