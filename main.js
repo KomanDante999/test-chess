@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		breakpoints: [
 			{
 				maxWidth: Infinity,
-				minWidth: 1200,
+				minWidth: 1024,
 				disable: true,
 			},
 			{
@@ -26,12 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				minWidth: 600,
 				slides: 2,
 				space: 20
-			},
-			{
-				maxWidth: 1200,
-				minWidth: 1024,
-				slides: 3,
-				space: 30
 			},
 			{
 				maxWidth: 600,

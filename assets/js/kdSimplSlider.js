@@ -38,6 +38,7 @@ export class KdSimplSlider {
 					console.log('clean');
 					this.cleanView()
 					this.cleanModel()
+					this.model.status = 'disable'
 				}
 
 				console.log(this.model);
@@ -94,7 +95,7 @@ export class KdSimplSlider {
 				h: null,
 				num: null,    // number of visible slides
 				space: null,
-				active: 1,
+				active: 0,
 			},
 			mobilFirst: true,
 			anim: {
@@ -169,6 +170,18 @@ export class KdSimplSlider {
 			card.order = index
 		})
 		this.model.card.total = this.model.cards.length
+
+		// pag
+		if (this.model.pag.isEnable) {
+			this.model.pag.wrap.forEach(wrap => {
+				wrap.buttons.push({
+					node: wrap.node.querySelector('[data-kd-slider="pag-btn"]'),
+					num: 0,
+					isActive: false,
+				})
+			})
+		}
+
 	}
 
 	setModel() {
@@ -196,13 +209,6 @@ export class KdSimplSlider {
 
 				// pag
 				if (this.model.pag.isEnable) {
-					this.model.pag.wrap.forEach(wrap => {
-						wrap.buttons.push({
-							node: wrap.node.querySelector('[data-kd-slider="pag-btn"]'),
-							num: 0,
-							isActive: false,
-						})
-					})
 
 					this.model.pag.wrap.forEach(wrap => {
 						for (let i = 1; i < (this.model.card.total - (this.model.card.num - 1)); i++) {
@@ -418,17 +424,20 @@ export class KdSimplSlider {
 		})
 		if (this.model.pag.isEnable) {
 			this.model.pag.wrap.forEach(wrap => {
-				wrap.node.replaceChildren()
-				wrap.node.append(wrap.buttons[0].node)
+				wrap.buttons.forEach(btn => {
+					if (btn.num !== 0) {
+						wrap.node.removeChild(btn.node)
+					}
+				})
 			})
 
 		}
-		this.model.status = 'disable'
 	}
+
 	cleanModel() {
 		// clean pag buttons
 		this.model.pag.wrap.forEach((wrap => {
-			wrap.buttons = []
+			wrap.buttons.splice(1, (wrap.buttons.length - 1))
 		}))
 		this.model.card.active = 0
 	}
