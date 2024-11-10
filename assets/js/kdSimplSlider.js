@@ -6,6 +6,9 @@ export class KdSimplSlider {
 		if (this.$Slider) {
 
 			this.setModelDef(params)
+			this.handleNextClick = this.handleNextClick.bind(this)
+			this.handlePrevClick = this.handlePrevClick.bind(this)
+			this.handlePagClick = this.handlePagClick.bind(this)
 
 			// events
 			window.addEventListener('load', () => {
@@ -133,6 +136,7 @@ export class KdSimplSlider {
 			if (elem.dataset.kdSlider == 'wrap') {
 				this.model.wrap.node = elem
 			}
+			// cards
 			if (elem.dataset.kdSlider == 'card') {
 				this.model.cards.push({
 					node: elem,
@@ -141,6 +145,7 @@ export class KdSimplSlider {
 					isChange: false,
 				})
 			}
+			// nav
 			if (this.model.nav.isEnable) {
 				if (elem.dataset.kdSlider == 'next') {
 					this.model.nav.next.push({
@@ -155,6 +160,7 @@ export class KdSimplSlider {
 					})
 				}
 			}
+			// pag
 			if (this.model.pag.isEnable) {
 				if (elem.dataset.kdSlider == 'pag-wrap') {
 					this.model.pag.wrap.push({
@@ -178,6 +184,7 @@ export class KdSimplSlider {
 					node: wrap.node.querySelector('[data-kd-slider="pag-btn"]'),
 					num: 0,
 					isActive: false,
+					clickHandler: null,
 				})
 			})
 		}
@@ -205,6 +212,16 @@ export class KdSimplSlider {
 				// nav
 				if (this.model.nav.isEnable) {
 					this.updateNavModel()
+					// ADD EVENT SLIDER
+					this.model.nav.next.forEach(btn => {
+						btn.clickHandler = this.handleNextClick
+					})
+					// ADD EVENT SLIDER
+					this.model.nav.prev.forEach(btn => {
+						btn.clickHandler = this.handlePrevClick
+					})
+
+
 				}
 
 				// pag
@@ -216,8 +233,13 @@ export class KdSimplSlider {
 								node: wrap.buttons[0].node.cloneNode(true),
 								num: i,
 								isActive: false,
+								clickHandler: null,
 							})
 						}
+						// ADD EVENT SLIDER
+						wrap.buttons.forEach(btn => {
+							btn.clickHandler = () => this.handlePagClick(btn.num)
+						})
 					})
 					this.updatePagModel()
 				}
@@ -313,19 +335,11 @@ export class KdSimplSlider {
 
 			// ADD EVENT SLIDER
 			this.model.nav.next.forEach(btn => {
-				btn.node.addEventListener('click', () => {
-					this.model.card.active += 1
-					this.updateModel()
-					this.updateView()
-				})
+				btn.node.addEventListener('click', btn.clickHandler)
 			})
 			// ADD EVENT SLIDER
 			this.model.nav.prev.forEach(btn => {
-				btn.node.addEventListener('click', () => {
-					this.model.card.active -= 1
-					this.updateModel()
-					this.updateView()
-				})
+				btn.node.addEventListener('click', btn.clickHandler)
 			})
 		}
 
@@ -335,13 +349,8 @@ export class KdSimplSlider {
 				wrap.buttons.forEach(btn => {
 					wrap.node.append(btn.node)
 					// ADD EVENT SLIDER
-					btn.node.addEventListener('click', () => {
-						this.model.card.active = btn.num
-						this.updateModel()
-						this.updateView()
-					})
+					btn.node.addEventListener('click', btn.clickHandler)
 				})
-
 			})
 			this.updatePagView()
 		}
@@ -400,6 +409,25 @@ export class KdSimplSlider {
 		})
 	}
 
+	handleNextClick() {
+		this.model.card.active += 1
+		this.updateModel()
+		this.updateView()
+	}
+
+	handlePrevClick() {
+		this.model.card.active -= 1
+		this.updateModel()
+		this.updateView()
+	}
+
+	handlePagClick(num) {
+		this.model.card.active = num
+		this.updateModel()
+		this.updateView()
+	}
+
+
 	doAnimView() {
 		this.model.cards.forEach(card => {
 			card.node.style.transform = `translateX(${card.position}px)`
@@ -422,6 +450,19 @@ export class KdSimplSlider {
 			card.node.style.transform = ''
 
 		})
+		// nav
+		if (this.model.nav.isEnable) {
+			// REMOVE EVENT SLIDER
+			this.model.nav.next.forEach(btn => {
+				btn.node.removeEventListener('click', btn.clickHandler)
+			})
+			// REMOVE EVENT SLIDER
+			this.model.nav.prev.forEach(btn => {
+				btn.node.removeEventListener('click', btn.clickHandler)
+			})
+		}
+
+		// pag
 		if (this.model.pag.isEnable) {
 			this.model.pag.wrap.forEach(wrap => {
 				wrap.buttons.forEach(btn => {
@@ -429,15 +470,35 @@ export class KdSimplSlider {
 						wrap.node.removeChild(btn.node)
 					}
 				})
+				// REMOVE EVENT SLIDER
+				if (wrap.buttons[0].clickHandler) {
+					wrap.buttons[0].node.removeEventListener('click', wrap.buttons[0].clickHandler)
+				}
 			})
-
 		}
 	}
 
 	cleanModel() {
-		// clean pag buttons
+		// nav
+		if (this.model.nav.isEnable) {
+			// REMOVE EVENT SLIDER
+			this.model.nav.next.forEach(btn => {
+				if (btn.clickHandler) {
+					btn.clickHandler = null
+				}
+			})
+			// REMOVE EVENT SLIDER
+			this.model.nav.prev.forEach(btn => {
+				if (btn.clickHandler) {
+					btn.clickHandler = null
+				}
+			})
+		}
+
+		// pag
 		this.model.pag.wrap.forEach((wrap => {
 			wrap.buttons.splice(1, (wrap.buttons.length - 1))
+			wrap.buttons[0].clickHandler = null
 		}))
 		this.model.card.active = 0
 	}
