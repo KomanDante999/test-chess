@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			},
 			{
 				maxWidth: 1024,
-				minWidth: 600,
+				minWidth: 635,
 				slides: 2,
 				space: 20
 			},
 			{
-				maxWidth: 600,
+				maxWidth: 635,
 				minWidth: 0,
 				slides: 1,
 				space: 20

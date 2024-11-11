@@ -500,7 +500,7 @@
 
 .stages__navigation {
 	width: 100%;
-	display: flex;
+	display: none;
 	justify-content: center;
 }
 
@@ -581,7 +581,7 @@
 		position: relative;
 		display: block;
 		width: 100%;
-		height: 300px;
+		height: 400px;
 		overflow: hidden;
 	}
 
@@ -589,9 +589,15 @@
 		width: 100%;
 		height: 100%;
 		flex-direction: column;
+		padding-top: 42px;
+		background-image: url(../img/about/bg.webp);
+		background-repeat: no-repeat;
+		background-size: cover;
 	}
 
-	.stages-cart__item {}
+	.stages-cart__item {
+		background-image: none;
+	}
 
 	.stages-cart__item_first {
 		width: 100%;
@@ -603,11 +609,15 @@
 	}
 
 	.stages-cart__item_p-right {
-		padding-right: 0;
+		padding-right: 20px;
 	}
 
 	.stages-cart__item_p-bottom {
 		padding-bottom: 0;
+	}
+
+	.stages__navigation {
+		display: flex;
 	}
 }
 
@@ -615,6 +625,7 @@
 	:root {
 		--title-L: 36px;
 		--title-M: 36px;
+		--text-base: 18px;
 		--text-m: 18px;
 	}
 
@@ -760,6 +771,10 @@
 		display: block;
 		flex-grow: 0;
 		flex-shrink: 0;
+	}
+
+	.stages__wrap {
+		height: 300px;
 	}
 }
 

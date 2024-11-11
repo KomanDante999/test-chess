@@ -51,10 +51,20 @@ export class KdSimplSlider {
 
 	doEnabling() {
 		this.model.mediaRange.forEach(point => {
-			if (this.currentViewport > point.minWidth && this.currentViewport <= point.maxWidth) {
-				point.status = 'enable'
+
+			if (this.model.mobilFirst) {
+				if (this.currentViewport >= point.minWidth && this.currentViewport < point.maxWidth) {
+					point.status = 'enable'
+				} else {
+					point.status = 'disable'
+				}
 			} else {
-				point.status = 'disable'
+				if (this.currentViewport > point.minWidth && this.currentViewport <= point.maxWidth) {
+					point.status = 'enable'
+				} else {
+					point.status = 'disable'
+				}
+
 			}
 		})
 
