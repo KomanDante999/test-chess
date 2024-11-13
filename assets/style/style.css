@@ -402,6 +402,7 @@
 .about {
 	padding-top: 70px;
 	padding-bottom: 100px;
+	overflow: hidden;
 }
 
 .about__top-wrap {
@@ -413,7 +414,7 @@
 
 .about__title {
 	font-size: var(--title-M);
-	line-height: 117%;
+	/* line-height: 117%; */
 }
 
 .about__title_end {
@@ -587,6 +588,10 @@
 	}
 
 	/* ABOUT */
+	.about__top-wrap {
+		margin-bottom: 80px;
+	}
+
 	.stages__wrap {
 		position: relative;
 		display: block;
@@ -599,7 +604,7 @@
 		width: 100%;
 		height: 100%;
 		flex-direction: column;
-		padding-top: 42px;
+		padding-top: 120px;
 		background-image: url(../img/about/bg.webp);
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -628,6 +633,13 @@
 
 	.stages__navigation {
 		display: flex;
+	}
+
+	.stages__decor-img {
+		right: auto;
+		bottom: auto;
+		left: 0;
+		top: -90px;
 	}
 }
 
@@ -691,19 +703,14 @@
 		display: flex;
 		flex-direction: row;
 		width: 335px;
-		padding: 11px 18px;
+		padding: 10px 18px;
 	}
 
 	.running-line {
 		height: 38px;
 	}
 
-	/* ABOUT */
-	.about {
-		padding-top: 83px;
-		/* padding-bottom: 100px; */
-	}
-
+	/* SUPPORT */
 	.support-chess {
 		padding-top: 48px;
 		padding-bottom: 40px;
@@ -711,7 +718,7 @@
 
 	.support-chess__top-wrap {
 		padding-right: 0;
-		margin-bottom: 19px;
+		margin-bottom: 35px;
 	}
 
 	.support-chess__img-top {
@@ -739,16 +746,41 @@
 	}
 
 	.support-chess__content-title {
-		margin-bottom: 43px;
+		margin-bottom: 40px;
 	}
 
 	.support-chess__content-price {
-		margin-bottom: 38px;
+		margin-bottom: 40px;
 	}
 
 	.support-chess__content-link {
 		font-size: var(--text-s);
 		line-height: 120%;
+	}
+
+	/* ABOUT */
+	.about {
+		padding-top: 83px;
+		/* padding-bottom: 100px; */
+	}
+
+	.about__top-wrap {
+		margin-bottom: 146px;
+	}
+
+	.about__subtitle {
+		max-width: 100%;
+		padding-top: 8px;
+		font-size: var(--text-s);
+	}
+
+	.stages-cart {
+		padding-top: 42px;
+		font-size: var(--text-s);
+	}
+
+	.stages__decor-img {
+		top: -128px;
 	}
 }
 
@@ -799,4 +831,4 @@
 
 
 
-@media (max-width: 375px) {}
+@media (max-width: 392px) {}
