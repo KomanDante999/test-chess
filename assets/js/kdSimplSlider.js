@@ -213,7 +213,11 @@ export class KdSimplSlider {
 				// card
 				this.model.card.space = point.space
 				this.model.card.num = point.slides
-				this.model.card.w = Math.round((this.model.wrap.w - this.model.card.space) / this.model.card.num)
+				if (this.model.card.num == 1) {
+					this.model.card.w = this.model.wrap.w
+				} else {
+					this.model.card.w = Math.round((this.model.wrap.w - this.model.card.space) / this.model.card.num)
+				}
 				this.model.card.h = this.model.wrap.h
 
 				// cards
