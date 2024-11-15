@@ -470,7 +470,7 @@
 }
 
 .stages__card:nth-child(1) .stages-cart__item {
-	padding-bottom: 0;
+	padding-bottom: 10px;
 }
 
 .stages-cart__item_first {
