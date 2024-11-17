@@ -202,7 +202,6 @@
 							По всем вопросам обращаться в администрацию к К. Михельсону
 						</a>
 					</div>
-
 				</div>
 			</div>
 		</section>
@@ -214,7 +213,7 @@
 					<h2 class="title about__title about__title_end">Васюков</h2>
 					<p class="about__subtitle">Будущие источники обогащения васюкинцев</p>
 				</div>
-				<div id="kdSliderStages" class="about__stages stages">
+				<div id="kdSliderStages" class="stages">
 					<ul class="stages__wrap" data-kd-slider="wrap">
 						<li class="stages__card stages-cart" data-kd-slider="card">
 							<div class="stages-cart__item stages-cart__item_first">
@@ -284,33 +283,143 @@
 			<div class="container">
 				<h2 class="title section-players__title">Участники турнира</h2>
 
-				<div id="kdSliderPlayers" class="section-players__slider players">
+				<div id="kdSliderPlayers" class="players">
 					<ul class="players__wrap" data-kd-slider="wrap">
-						<li class="players__card players-cart" data-kd-slider="card">
-							<picture class="players__ava pictures">
-								<source media="(max-width: 800px)" srcset="./assets/img/about/airplane-375.webp">
-								<img src="./assets/img/about/airplane-1920.webp" alt="четырех коня">
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
 							</picture>
+							<h4 class="players-card__name">Хозе-Рауль Капабланка</h4>
+							<p class="players-card__desc">Чемпион мира по шахматам</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
+						</li>
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
+							</picture>
+							<h4 class="players-card__name">Эммануил Ласкер</h4>
+							<p class="players-card__desc">Чемпион мира по шахматам</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
+						</li>
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
+							</picture>
+							<h4 class="players-card__name">Александр Алехин</h4>
+							<p class="players-card__desc">Чемпион мира по шахматам</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
+						</li>
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
+							</picture>
+							<h4 class="players-card__name">Арон Нимцович</h4>
+							<p class="players-card__desc">Чемпион мира по шахматам</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
+						</li>
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
+							</picture>
+							<h4 class="players-card__name">Рихард Рети</h4>
+							<p class="players-card__desc">Чемпион мира по шахматам</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
+						</li>
+						<li class="players-card" data-kd-slider="card">
+							<picture class="players-card__ava pictures">
+								<source media="(max-width: 800px)" srcset="./assets/img/players/ava-375.webp">
+								<img src="./assets/img/players/ava-1920.webp" alt="avatar">
+							</picture>
+							<h4 class="players-card__name">Остап Бендер</h4>
+							<p class="players-card__desc">Гроссмейстер</p>
+							<a class="players-card__link btn-third" href="#" target="_blank" rel="noopener noreferrer">Подробнее</a>
 						</li>
 					</ul>
-					<div class="players__navigation">
-						<div class="players-nav">
-							<button class="btn-nav btn-nav__prev players-nav__btn" data-kd-slider="prev"></button>
-							<div class="players-nav__content">
-								<div class="players-nav__content players-pag" data-kd-slider="pag-wrap">
-									<button class="btn-pag players-pag__btn" data-kd-slider="pag-btn"></button>
-								</div>
+					<div class="players__navigation players-nav">
+						<button class="btn-nav btn-nav__prev players-nav__btn" data-kd-slider="prev"></button>
+						<div class="players-nav__content">
+							<div class="players-counter">
+								<div data-kd-slider="count-current"></div>
+								<div class="players-counter__separator">/</div>
+								<div data-kd-slider="count-total"></div>
 							</div>
-							<button class="btn-nav btn-nav__next players-nav__btn" data-kd-slider="next"></button>
 						</div>
-
+						<button class="btn-nav btn-nav__next players-nav__btn" data-kd-slider="next"></button>
 					</div>
 				</div>
 
 			</div>
 		</section>
+
+		<section id="kdRunline2" class="running-line">
+			<div class="running-line__row">
+				<div data-kd-runline-item="0" class="running-line__item">
+					<div class="running-line__content">Дело помощи утопающим — дело рук самих утопающих!</div>
+				</div>
+				<div data-kd-runline-item="1" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+				<div data-kd-runline-item="2" class="running-line__item">
+					<div class="running-line__content">Шахматы двигают вперед не только культуру, но и экономику!</div>
+				</div>
+				<div data-kd-runline-item="3" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+				<div data-kd-runline-item="4" class="running-line__item">
+					<div class="running-line__content">Лед тронулся, господа присяжные заседатели!</div>
+				</div>
+				<div data-kd-runline-item="5" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+				<div data-kd-runline-item="6" class="running-line__item">
+					<div class="running-line__content">Дело помощи утопающим — дело рук самих утопающих!</div>
+				</div>
+				<div data-kd-runline-item="7" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+				<div data-kd-runline-item="8" class="running-line__item">
+					<div class="running-line__content">Шахматы двигают вперед не только культуру, но и экономику!</div>
+				</div>
+				<div data-kd-runline-item="9" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+				<div data-kd-runline-item="10" class="running-line__item">
+					<div class="running-line__content">Лед тронулся, господа присяжные заседатели!</div>
+				</div>
+				<div data-kd-runline-item="11" class="running-line__item">
+					<div class="running-line__content">
+						<div class="running-line__decor"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
 	</main>
-	<footer></footer>
+	<footer class="footer">
+		<div class="container">
+			<div class="footer__wrap">
+				<p class="footer__content">
+					Все персонажи, события и цитаты являются вымышленными и не принадлежат создателям сайта. С подробностями можно
+					познакомиться в главе XXXIV романа Ильи Ильфа и Евгения Петрова «Двенадцать стульев».
+				</p>
+			</div>
+		</div>
+	</footer>
 
 </body>
 

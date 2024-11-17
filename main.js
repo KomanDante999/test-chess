@@ -8,12 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		id: 'kdRunline',
 		speedAnimation: 2.1,
 	}
+	const paramsKdRunLine2 = {
+		id: 'kdRunline2',
+		speedAnimation: 2.1,
+	}
+
+	// параметры слайдера STAGES 
 	const paramsKdSliderStages = {
 		id: 'kdSliderStages',
 		navigationEnable: true,
 		navigationDisableClass: 'disable-btn',
 		paginationEnable: true,
 		paginationActiveClass: 'active-btn',
+		counterEnable: false,
 		mobilFirst: false,
 		breakpoints: [
 			{
@@ -40,7 +47,49 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	// параметры слайдера PLAYERS 
+	const paramsKdSliderPlayers = {
+		id: 'kdSliderPlayers',
+		navigationEnable: true,
+		navigationDisableClass: 'disable-btn',
+		counterEnable: true,
+		mobilFirst: false,
+		breakpoints: [
+			{
+				maxWidth: Infinity,
+				minWidth: 1384,
+				slides: 4,
+				space: 0
+
+			},
+			{
+				maxWidth: 1384,
+				minWidth: 1024,
+				slides: 3,
+				space: 0
+			},
+			{
+				maxWidth: 1024,
+				minWidth: 635,
+				slides: 2,
+				space: 0
+			},
+			{
+				maxWidth: 635,
+				minWidth: 0,
+				slides: 1,
+				space: 0
+			},
+		],
+		animation: {
+			duration: 0.6,
+			ease: 'ease-out' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
+		}
+	}
+
 	watchForHover()  // отслеживание метода ввода: курсор или тап
 	new KdRunLine(paramsKdRunLine)  // бегущая строка
-	new KdSimplSlider(paramsKdSliderStages)
+	new KdRunLine(paramsKdRunLine2)  // бегущая строка в footer
+	new KdSimplSlider(paramsKdSliderStages)  // слайдер в секции STAGES
+	new KdSimplSlider(paramsKdSliderPlayers)  // слайдер в секции PLAYERS
 })

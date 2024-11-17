@@ -12,25 +12,20 @@ export class KdSimplSlider {
 
 			// events
 			window.addEventListener('load', () => {
-				console.log('Win load');
 				let sliderStatus = this.doEnabling()
 
 				if (sliderStatus == 'enable') {
-					console.log('enable');
 					this.setModel()
 					this.setView()
 
 				}
-				console.log(this.model);
 			})
 
 			window.addEventListener('resize', () => {
-				console.log('resize');
 
 				let sliderStatus = this.doEnabling()
 
 				if (sliderStatus == 'enable') {
-					console.log('enable');
 					this.cleanView()
 					this.cleanModel()
 					this.setModel()
@@ -38,13 +33,11 @@ export class KdSimplSlider {
 				}
 
 				if (sliderStatus == 'clean') {
-					console.log('clean');
 					this.cleanView()
 					this.cleanModel()
 					this.model.status = 'disable'
 				}
 
-				console.log(this.model);
 			})
 		}
 	}
@@ -92,14 +85,17 @@ export class KdSimplSlider {
 				next: [],
 				prev: [],
 				disableClass: 'disable-btn',
-				isEnable: true,
-				isHide: true,
+				isEnable: false,
 			},
 			pag: {
 				wrap: [],
 				activeClass: 'active-btn',
-				isEnable: true,
-				isHide: true,
+				isEnable: false,
+			},
+			count: {
+				current: [],
+				total: [],
+				isEnable: false,
 			},
 			mediaRange: [],
 			card: {
@@ -121,6 +117,7 @@ export class KdSimplSlider {
 		if (params.mobilFirst !== undefined) { this.model.mobilFirst = params.mobilFirst }
 		if (params.navigationEnable !== undefined) { this.model.nav.isEnable = params.navigationEnable }
 		if (params.paginationEnable !== undefined) { this.model.pag.isEnable = params.paginationEnable }
+		if (params.counterEnable !== undefined) { this.model.count.isEnable = params.counterEnable }
 		if (params.navigationDisableClass) { this.model.nav.disableClass = params.navigationDisableClass }
 		if (params.paginationActiveClass) { this.model.pag.activeClass = params.paginationActiveClass }
 
@@ -142,6 +139,7 @@ export class KdSimplSlider {
 		this.model.mediaRange.sort((a, b) => b.maxWidth - a.maxWidth)
 		// add elements
 		this.raw = Array.from(this.$Slider.querySelectorAll('[data-kd-slider]'))
+
 		this.raw.forEach(elem => {
 			if (elem.dataset.kdSlider == 'wrap') {
 				this.model.wrap.node = elem
@@ -176,6 +174,21 @@ export class KdSimplSlider {
 					this.model.pag.wrap.push({
 						node: elem,
 						buttons: [],
+					})
+				}
+			}
+			// count
+			if (this.model.count.isEnable) {
+				if (elem.dataset.kdSlider == 'count-current') {
+					this.model.count.current.push({
+						node: elem,
+						value: null,
+					})
+				}
+				if (elem.dataset.kdSlider == 'count-total') {
+					this.model.count.total.push({
+						node: elem,
+						value: null,
 					})
 				}
 			}
@@ -234,8 +247,6 @@ export class KdSimplSlider {
 					this.model.nav.prev.forEach(btn => {
 						btn.clickHandler = this.handlePrevClick
 					})
-
-
 				}
 
 				// pag
@@ -257,19 +268,35 @@ export class KdSimplSlider {
 					})
 					this.updatePagModel()
 				}
+
+				// count
+				if (this.model.count.isEnable) {
+					this.updateCountModel()
+					this.model.count.total.forEach(item => {
+						item.value = this.model.card.total
+					})
+				}
+
 			}
 		})
 	}
 
 	updateModel() {
+		// cards
 		this.positionCardModel()
-		console.log(this.model.card.active);
+		// nav
 		if (this.model.nav.isEnable) {
 			this.updateNavModel()
 		}
+		// pag
 		if (this.model.pag.isEnable) {
 			this.updatePagModel()
 		}
+		// count
+		if (this.model.count.isEnable) {
+			this.updateCountModel()
+		}
+
 
 	}
 
@@ -324,6 +351,11 @@ export class KdSimplSlider {
 		})
 	}
 
+	updateCountModel() {
+		this.model.count.current.forEach(item => {
+			item.value = this.model.card.active + 1
+		})
+	}
 	// ======= VIEW ========
 
 	setView() {
@@ -369,6 +401,13 @@ export class KdSimplSlider {
 			this.updatePagView()
 		}
 
+		// count
+		if (this.model.count.isEnable) {
+			this.updateCountView()
+			this.model.count.total.forEach(item => {
+				item.node.textContent = `${item.value}`
+			})
+		}
 	}
 
 	updateView() {
@@ -379,6 +418,11 @@ export class KdSimplSlider {
 		if (this.model.pag.isEnable) {
 			this.updatePagView()
 		}
+		// count
+		if (this.model.count.isEnable) {
+			this.updateCountView()
+		}
+
 		this.doAnimView()
 	}
 
@@ -420,6 +464,12 @@ export class KdSimplSlider {
 					btn.node.disabled = false
 				}
 			})
+		})
+	}
+
+	updateCountView() {
+		this.model.count.current.forEach(item => {
+			item.node.textContent = `${item.value}`
 		})
 	}
 
