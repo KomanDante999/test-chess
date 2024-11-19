@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		paginationActiveClass: 'active-btn',
 		counterEnable: false,
 		mobilFirst: false,
+		loop: false,
+		autoplay: false,
+		timingAutoplay: null,
 		breakpoints: [
 			{
 				maxWidth: Infinity,
@@ -54,6 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		navigationDisableClass: 'disable-btn',
 		counterEnable: true,
 		mobilFirst: false,
+		loop: false,
+		autoplay: {
+			isEnable: false,
+			delay: null,
+
+		},
 		breakpoints: [
 			{
 				maxWidth: Infinity,
