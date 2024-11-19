@@ -23,8 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		counterEnable: false,
 		mobilFirst: false,
 		loop: false,
-		autoplay: false,
-		timingAutoplay: null,
+		autoplay: {
+			isEnable: false,
+			delay: null,
+		},
 		breakpoints: [
 			{
 				maxWidth: Infinity,
@@ -57,11 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		navigationDisableClass: 'disable-btn',
 		counterEnable: true,
 		mobilFirst: false,
-		loop: false,
+		loop: true,
 		autoplay: {
-			isEnable: false,
-			delay: null,
-
+			isEnable: true,
+			delay: 4,
 		},
 		breakpoints: [
 			{

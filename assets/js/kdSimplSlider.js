@@ -107,6 +107,11 @@ export class KdSimplSlider {
 				active: 0,
 			},
 			mobilFirst: true,
+			loop: false,
+			autoplay: {
+				isEnable: false,
+				delay: null,
+			},
 			anim: {
 				duration: 0.5,
 				ease: 'ease-in-out' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
