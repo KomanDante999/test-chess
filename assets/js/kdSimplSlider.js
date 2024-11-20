@@ -63,6 +63,7 @@ export class KdSimplSlider {
 
 		if (this.model.mediaRange.find(point => point.status == 'enable')) {
 			this.model.status = 'enable'
+			console.log(this.model);
 		} else {
 			if (this.model.status == 'enable') {
 				this.model.status = 'clean'
@@ -107,10 +108,10 @@ export class KdSimplSlider {
 				active: 0,
 			},
 			mobilFirst: true,
-			loop: false,
+			isLoop: false,
 			autoplay: {
 				isEnable: false,
-				delay: null,
+				delay: 4,
 			},
 			anim: {
 				duration: 0.5,
@@ -126,6 +127,11 @@ export class KdSimplSlider {
 		if (params.navigationDisableClass) { this.model.nav.disableClass = params.navigationDisableClass }
 		if (params.paginationActiveClass) { this.model.pag.activeClass = params.paginationActiveClass }
 
+		if (params.loop !== undefined) { this.model.isLoop = params.loop }
+		if (params.autoplay !== undefined) {
+			if (params.autoplay.isEnable !== undefined) { this.model.autoplay.isEnable = params.autoplay.isEnable }
+			if (params.autoplay.delay !== undefined) { this.model.autoplay.delay = params.autoplay.delay }
+		}
 		if (params.animation.duration) { this.model.anim.duration = params.animation.duration }
 		if (params.animation.ease) { this.model.anim.ease = params.animation.ease }
 
@@ -323,25 +329,27 @@ export class KdSimplSlider {
 	}
 
 	updateNavModel() {
-		if (this.model.card.active == (this.model.card.total - this.model.card.num)) {
-			this.model.nav.next.forEach(btn => {
-				btn.isDisable = true
-			})
-		}
-		if (this.model.card.active < (this.model.card.total - this.model.card.num)) {
-			this.model.nav.next.forEach(btn => {
-				btn.isDisable = false
-			})
-		}
-		if (this.model.card.active == 0) {
-			this.model.nav.prev.forEach(btn => {
-				btn.isDisable = true
-			})
-		}
-		if (this.model.card.active > 0) {
-			this.model.nav.prev.forEach(btn => {
-				btn.isDisable = false
-			})
+		if (!this.model.isLoop) {
+			if (this.model.card.active == (this.model.card.total - this.model.card.num)) {
+				this.model.nav.next.forEach(btn => {
+					btn.isDisable = true
+				})
+			}
+			if (this.model.card.active < (this.model.card.total - this.model.card.num)) {
+				this.model.nav.next.forEach(btn => {
+					btn.isDisable = false
+				})
+			}
+			if (this.model.card.active == 0) {
+				this.model.nav.prev.forEach(btn => {
+					btn.isDisable = true
+				})
+			}
+			if (this.model.card.active > 0) {
+				this.model.nav.prev.forEach(btn => {
+					btn.isDisable = false
+				})
+			}
 		}
 	}
 
@@ -479,13 +487,21 @@ export class KdSimplSlider {
 	}
 
 	handleNextClick() {
-		this.model.card.active += 1
+		if (this.model.isLoop && this.model.card.active == this.model.card.total) {
+			this.model.card.active = 0
+		} else {
+			this.model.card.active += 1
+		}
 		this.updateModel()
 		this.updateView()
 	}
 
 	handlePrevClick() {
-		this.model.card.active -= 1
+		if (this.model.isLoop && this.model.card.active == 0) {
+			this.model.card.active = this.model.card.total
+		} else {
+			this.model.card.active -= 1
+		}
 		this.updateModel()
 		this.updateView()
 	}
