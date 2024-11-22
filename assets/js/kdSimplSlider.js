@@ -106,6 +106,7 @@ export class KdSimplSlider {
 				num: null,    // number of visible slides
 				space: null,
 				active: 0,
+				activePrev: 0,
 			},
 			mobilFirst: true,
 			isLoop: false,
@@ -312,20 +313,55 @@ export class KdSimplSlider {
 	}
 
 	positionCardModel() {
-		this.model.cards
-			.filter(card => card.order < this.model.card.active)
-			.forEach(card => { card.position = `-${this.model.card.w + this.model.card.space}` })
 
-		this.model.cards
-			.filter(card => card.order > (this.model.card.active + this.model.card.num - 1))
-			.forEach(card => { card.position = `${this.model.wrap.w + this.model.card.space}` })
+		console.log(this.model);
 
-		this.model.cards
-			.filter(card => card.order >= this.model.card.active)
-			.filter(card => card.order <= (this.model.card.active + this.model.card.num - 1))
-			.forEach((card, index) => {
-				card.position = `${this.model.card.w * index + this.model.card.space * index}`
+		if (this.model.isLoop) {
+			let index = 0
+			this.model.cards.forEach(item => {
+				if (item.order < this.model.card.active) {
+					item.position = `-${this.model.card.w + this.model.card.space}`
+				}
+				if (item.order == this.model.card.active || item.order < (this.model.card.active + this.model.card.num)) {
+					item.position = `${this.model.card.w * index + this.model.card.space * index}`
+					index += 1
+				}
+				if (item.order >= (this.model.card.active + this.model.card.num)) {
+					item.position = `${this.model.wrap.w + this.model.card.space}`
+				}
 			})
+
+		} else {
+			let index = 0
+			this.model.cards.forEach(item => {
+				if (item.order < this.model.card.active) {
+					item.position = `-${this.model.card.w + this.model.card.space}`
+				}
+				if (item.order == this.model.card.active || item.order < (this.model.card.active + this.model.card.num)) {
+					item.position = `${this.model.card.w * index + this.model.card.space * index}`
+					index += 1
+					console.log(index);
+				}
+				if (item.order >= (this.model.card.active + this.model.card.num)) {
+					item.position = `${this.model.wrap.w + this.model.card.space}`
+				}
+			})
+		}
+
+		// this.model.cards
+		// 	.filter(card => card.order < this.model.card.active)
+		// 	.forEach(card => { card.position = `-${this.model.card.w + this.model.card.space}` })
+
+		// this.model.cards
+		// 	.filter(card => card.order > (this.model.card.active + this.model.card.num - 1))
+		// 	.forEach(card => { card.position = `${this.model.wrap.w + this.model.card.space}` })
+
+		// this.model.cards
+		// 	.filter(card => card.order >= this.model.card.active)
+		// 	.filter(card => card.order <= (this.model.card.active + this.model.card.num - 1))
+		// 	.forEach((card, index) => {
+		// 		card.position = `${this.model.card.w * index + this.model.card.space * index}`
+		// 	})
 	}
 
 	updateNavModel() {
@@ -488,8 +524,10 @@ export class KdSimplSlider {
 
 	handleNextClick() {
 		if (this.model.isLoop && this.model.card.active == this.model.card.total) {
+			this.model.card.activePrev = this.model.card.active
 			this.model.card.active = 0
 		} else {
+			this.model.card.activePrev = this.model.card.active
 			this.model.card.active += 1
 		}
 		this.updateModel()
@@ -498,8 +536,10 @@ export class KdSimplSlider {
 
 	handlePrevClick() {
 		if (this.model.isLoop && this.model.card.active == 0) {
+			this.model.card.activePrev = this.model.card.active
 			this.model.card.active = this.model.card.total
 		} else {
+			this.model.card.activePrev = this.model.card.active
 			this.model.card.active -= 1
 		}
 		this.updateModel()
@@ -507,6 +547,7 @@ export class KdSimplSlider {
 	}
 
 	handlePagClick(num) {
+		this.model.card.activePrev = this.model.card.active
 		this.model.card.active = num
 		this.updateModel()
 		this.updateView()
