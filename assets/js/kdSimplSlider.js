@@ -63,7 +63,6 @@ export class KdSimplSlider {
 
 		if (this.model.mediaRange.find(point => point.status == 'enable')) {
 			this.model.status = 'enable'
-			console.log(this.model);
 		} else {
 			if (this.model.status == 'enable') {
 				this.model.status = 'clean'
@@ -161,8 +160,9 @@ export class KdSimplSlider {
 				this.model.cards.push({
 					node: elem,
 					order: null,
+					index: null,
 					position: null,
-					isChange: false,
+					// isChange: false,
 				})
 			}
 			// nav
@@ -209,6 +209,7 @@ export class KdSimplSlider {
 		this.raw = []
 		this.model.cards.forEach((card, index) => {
 			card.order = index
+			card.index = index
 		})
 		this.model.card.total = this.model.cards.length
 
@@ -314,54 +315,35 @@ export class KdSimplSlider {
 
 	positionCardModel() {
 
-		console.log(this.model);
+		let lengthArr = this.model.cards.filter(item => item.order >= this.model.card.active).length
+		this.model.cards
+			.filter(item => item.order >= this.model.card.active)
+			.forEach((item, index) => {
+				item.index = index
+			})
 
 		if (this.model.isLoop) {
-			let index = 0
-			this.model.cards.forEach(item => {
-				if (item.order < this.model.card.active) {
-					item.position = `-${this.model.card.w + this.model.card.space}`
-				}
-				if (item.order == this.model.card.active || item.order < (this.model.card.active + this.model.card.num)) {
-					item.position = `${this.model.card.w * index + this.model.card.space * index}`
-					index += 1
-				}
-				if (item.order >= (this.model.card.active + this.model.card.num)) {
-					item.position = `${this.model.wrap.w + this.model.card.space}`
-				}
-			})
+			this.model.cards
+				.filter(item => item.order < this.model.card.active)
+				.forEach((item, index) => {
+					item.index = index + lengthArr
+				})
+			this.model.cards[this.model.card.total - 1].index = -1;
 
 		} else {
-			let index = 0
-			this.model.cards.forEach(item => {
-				if (item.order < this.model.card.active) {
-					item.position = `-${this.model.card.w + this.model.card.space}`
-				}
-				if (item.order == this.model.card.active || item.order < (this.model.card.active + this.model.card.num)) {
-					item.position = `${this.model.card.w * index + this.model.card.space * index}`
-					index += 1
-					console.log(index);
-				}
-				if (item.order >= (this.model.card.active + this.model.card.num)) {
-					item.position = `${this.model.wrap.w + this.model.card.space}`
-				}
-			})
+			this.model.cards
+				.filter(item => item.order < this.model.card.active)
+				.forEach((item, index) => {
+					item.index = -(index + 1)
+				})
+
 		}
 
-		// this.model.cards
-		// 	.filter(card => card.order < this.model.card.active)
-		// 	.forEach(card => { card.position = `-${this.model.card.w + this.model.card.space}` })
+		this.model.cards.forEach(item => {
+			item.position = `${this.model.card.w * item.index + this.model.card.space * item.index}`
+		})
 
-		// this.model.cards
-		// 	.filter(card => card.order > (this.model.card.active + this.model.card.num - 1))
-		// 	.forEach(card => { card.position = `${this.model.wrap.w + this.model.card.space}` })
-
-		// this.model.cards
-		// 	.filter(card => card.order >= this.model.card.active)
-		// 	.filter(card => card.order <= (this.model.card.active + this.model.card.num - 1))
-		// 	.forEach((card, index) => {
-		// 		card.position = `${this.model.card.w * index + this.model.card.space * index}`
-		// 	})
+		console.log(this.model);
 	}
 
 	updateNavModel() {
