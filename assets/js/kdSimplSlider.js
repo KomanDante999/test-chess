@@ -161,7 +161,7 @@ export class KdSimplSlider {
 					order: null,
 					index: null,
 					position: null,
-					isVisible: false,
+					opacity: 0,
 				})
 			}
 			// nav
@@ -345,9 +345,9 @@ export class KdSimplSlider {
 
 		// visible cards
 		this.model.cards.forEach(item => {
-			item.isVisible = false
-			if (item.index >= 0 && item.index < this.model.card.num) {
-				item.isVisible = true
+			item.opacity = 0
+			if (item.index >= -1 && item.index <= this.model.card.num) {
+				item.opacity = 1
 			}
 		})
 		// translate cards 
@@ -544,6 +544,8 @@ export class KdSimplSlider {
 
 	doAnimView() {
 		this.model.cards.forEach(card => {
+
+			card.node.style.opacity = card.opacity
 			card.node.style.transform = `translateX(${card.position}px)`
 		})
 	}
@@ -562,7 +564,7 @@ export class KdSimplSlider {
 			card.node.style.width = ''
 			card.node.style.height = ''
 			card.node.style.transform = ''
-
+			card.node.style.opacity = ''
 		})
 		// nav
 		if (this.model.nav.isEnable) {
