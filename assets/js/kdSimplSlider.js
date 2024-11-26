@@ -105,7 +105,6 @@ export class KdSimplSlider {
 				num: null,    // number of visible slides
 				space: null,
 				active: 0,
-				activePrev: 0,
 			},
 			mobilFirst: true,
 			isLoop: false,
@@ -162,7 +161,7 @@ export class KdSimplSlider {
 					order: null,
 					index: null,
 					position: null,
-					// isChange: false,
+					isVisible: false,
 				})
 			}
 			// nav
@@ -315,6 +314,7 @@ export class KdSimplSlider {
 
 	positionCardModel() {
 
+		// rotation cards
 		let lengthArr = this.model.cards.filter(item => item.order >= this.model.card.active).length
 		this.model.cards
 			.filter(item => item.order >= this.model.card.active)
@@ -328,7 +328,12 @@ export class KdSimplSlider {
 				.forEach((item, index) => {
 					item.index = index + lengthArr
 				})
-			this.model.cards[this.model.card.total - 1].index = -1;
+
+			this.model.cards.forEach(item => {
+				if (item.index == (this.model.card.total - 1)) {
+					item.index = -1
+				}
+			})
 
 		} else {
 			this.model.cards
@@ -336,9 +341,16 @@ export class KdSimplSlider {
 				.forEach((item, index) => {
 					item.index = -(index + 1)
 				})
-
 		}
 
+		// visible cards
+		this.model.cards.forEach(item => {
+			item.isVisible = false
+			if (item.index >= 0 && item.index < this.model.card.num) {
+				item.isVisible = true
+			}
+		})
+		// translate cards 
 		this.model.cards.forEach(item => {
 			item.position = `${this.model.card.w * item.index + this.model.card.space * item.index}`
 		})
@@ -505,11 +517,9 @@ export class KdSimplSlider {
 	}
 
 	handleNextClick() {
-		if (this.model.isLoop && this.model.card.active == this.model.card.total) {
-			this.model.card.activePrev = this.model.card.active
+		if (this.model.isLoop && this.model.card.active == (this.model.card.total - 1)) {
 			this.model.card.active = 0
 		} else {
-			this.model.card.activePrev = this.model.card.active
 			this.model.card.active += 1
 		}
 		this.updateModel()
@@ -518,18 +528,14 @@ export class KdSimplSlider {
 
 	handlePrevClick() {
 		if (this.model.isLoop && this.model.card.active == 0) {
-			this.model.card.activePrev = this.model.card.active
-			this.model.card.active = this.model.card.total
+			this.model.card.active = this.model.card.total - 1
 		} else {
-			this.model.card.activePrev = this.model.card.active
 			this.model.card.active -= 1
 		}
 		this.updateModel()
 		this.updateView()
 	}
-
 	handlePagClick(num) {
-		this.model.card.activePrev = this.model.card.active
 		this.model.card.active = num
 		this.updateModel()
 		this.updateView()
