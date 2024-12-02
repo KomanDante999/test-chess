@@ -98,13 +98,14 @@ export class KdSimplSlider {
 				isEnable: false,
 			},
 			mediaRange: [],
-			card: {
-				total: null,
+			prop: {
+				total: null,  // total cards
 				w: null,
 				h: null,
 				num: null,    // number of visible slides
 				space: null,
-				active: 0,
+				active: 0,    // active order card 
+				dir: null,
 			},
 			mobilFirst: true,
 			isLoop: false,
@@ -161,7 +162,8 @@ export class KdSimplSlider {
 					order: null,
 					index: null,
 					position: null,
-					opacity: 0,
+					isMove: false,
+					isTransfer: false,
 				})
 			}
 			// nav
@@ -210,7 +212,7 @@ export class KdSimplSlider {
 			card.order = index
 			card.index = index
 		})
-		this.model.card.total = this.model.cards.length
+		this.model.prop.total = this.model.cards.length
 
 		// pag
 		if (this.model.pag.isEnable) {
@@ -236,16 +238,17 @@ export class KdSimplSlider {
 				this.model.wrap.h = this.model.wrap.node.getBoundingClientRect().height
 
 				// card
-				this.model.card.space = point.space
-				this.model.card.num = point.slides
-				if (this.model.card.num == 1) {
-					this.model.card.w = this.model.wrap.w
+				this.model.prop.space = point.space
+				this.model.prop.num = point.slides
+				if (this.model.prop.num == 1) {
+					this.model.prop.w = this.model.wrap.w
 				} else {
-					this.model.card.w = Math.round((this.model.wrap.w - this.model.card.space) / this.model.card.num)
+					this.model.prop.w = Math.round((this.model.wrap.w - this.model.prop.space) / this.model.prop.num)
 				}
-				this.model.card.h = this.model.wrap.h
+				this.model.prop.h = this.model.wrap.h
 
 				// cards
+				this.indexCardModel()
 				this.positionCardModel()
 
 				// nav
@@ -265,7 +268,7 @@ export class KdSimplSlider {
 				if (this.model.pag.isEnable) {
 
 					this.model.pag.wrap.forEach(wrap => {
-						for (let i = 1; i < (this.model.card.total - (this.model.card.num - 1)); i++) {
+						for (let i = 1; i < (this.model.prop.total - (this.model.prop.num - 1)); i++) {
 							wrap.buttons.push({
 								node: wrap.buttons[0].node.cloneNode(true),
 								num: i,
@@ -285,7 +288,7 @@ export class KdSimplSlider {
 				if (this.model.count.isEnable) {
 					this.updateCountModel()
 					this.model.count.total.forEach(item => {
-						item.value = this.model.card.total
+						item.value = this.model.prop.total
 					})
 				}
 
@@ -295,7 +298,9 @@ export class KdSimplSlider {
 
 	updateModel() {
 		// cards
+		this.indexCardModel()
 		this.positionCardModel()
+		this.animationCardModel()
 		// nav
 		if (this.model.nav.isEnable) {
 			this.updateNavModel()
@@ -309,73 +314,81 @@ export class KdSimplSlider {
 			this.updateCountModel()
 		}
 
-
+		console.log(this.model);
 	}
 
-	positionCardModel() {
+	indexCardModel() {
 
-		// rotation cards
-		let lengthArr = this.model.cards.filter(item => item.order >= this.model.card.active).length
+		let lengthArr = this.model.cards.filter(item => item.order >= this.model.prop.active).length
 		this.model.cards
-			.filter(item => item.order >= this.model.card.active)
+			.filter(item => item.order >= this.model.prop.active)
 			.forEach((item, index) => {
 				item.index = index
 			})
 
 		if (this.model.isLoop) {
 			this.model.cards
-				.filter(item => item.order < this.model.card.active)
+				.filter(item => item.order < this.model.prop.active)
 				.forEach((item, index) => {
 					item.index = index + lengthArr
 				})
 
 			this.model.cards.forEach(item => {
-				if (item.index == (this.model.card.total - 1)) {
+				if (item.index == (this.model.prop.total - 1)) {
 					item.index = -1
 				}
 			})
 
 		} else {
 			this.model.cards
-				.filter(item => item.order < this.model.card.active)
+				.filter(item => item.order < this.model.prop.active)
 				.forEach((item, index) => {
 					item.index = -(index + 1)
 				})
 		}
+	}
 
-		// visible cards
+	positionCardModel() {
+
 		this.model.cards.forEach(item => {
-			item.opacity = 0
-			if (item.index >= -1 && item.index <= this.model.card.num) {
-				item.opacity = 1
+			item.position = `${this.model.prop.w * item.index + this.model.prop.space * item.index}`
+		})
+	}
+
+	animationCardModel() {
+		this.model.cards.forEach(item => {
+			item.isMove = false
+			if (item.index >= 0 && item.index < this.model.prop.num) {
+				console.log(item.index);
+				item.isMove = true
+			}
+			if (this.model.prop.dir == 'next' && item.index == -1) {
+				item.isMove = true
+			}
+			if (this.model.prop.dir == 'prev' && item.index == this.model.prop.num) {
+				item.isMove = true
 			}
 		})
-		// translate cards 
-		this.model.cards.forEach(item => {
-			item.position = `${this.model.card.w * item.index + this.model.card.space * item.index}`
-		})
-
-		console.log(this.model);
 	}
 
 	updateNavModel() {
 		if (!this.model.isLoop) {
-			if (this.model.card.active == (this.model.card.total - this.model.card.num)) {
+			if (this.model.prop.active == (this.model.prop.total - this.model.prop.num)) {
 				this.model.nav.next.forEach(btn => {
 					btn.isDisable = true
 				})
 			}
-			if (this.model.card.active < (this.model.card.total - this.model.card.num)) {
+			if (this.model.prop.active < (this.model.prop.total - this.model.prop.num)) {
 				this.model.nav.next.forEach(btn => {
 					btn.isDisable = false
 				})
 			}
-			if (this.model.card.active == 0) {
+			if (this.model.prop.active == 0) {
 				this.model.nav.prev.forEach(btn => {
 					btn.isDisable = true
 				})
 			}
-			if (this.model.card.active > 0) {
+			if (this.model.prop.active > 0) {
 				this.model.nav.prev.forEach(btn => {
 					btn.isDisable = false
 				})
@@ -387,7 +400,7 @@ export class KdSimplSlider {
 		this.model.pag.wrap.forEach(wrap => {
 			wrap.buttons.forEach(btn => {
 				btn.isActive = false
-				if (btn.num == this.model.card.active) {
+				if (btn.num == this.model.prop.active) {
 					btn.isActive = true
 				}
 			})
@@ -396,7 +409,7 @@ export class KdSimplSlider {
 
 	updateCountModel() {
 		this.model.count.current.forEach(item => {
-			item.value = this.model.card.active + 1
+			item.value = this.model.prop.active + 1
 		})
 	}
 	// ======= VIEW ========
@@ -408,15 +421,12 @@ export class KdSimplSlider {
 		this.model.wrap.node.style.overflow = 'hidden'
 		// cards
 		this.model.cards.forEach(card => {
-			card.node.style.width = `${this.model.card.w}px`
-			card.node.style.height = `${this.model.card.h}px`
+			card.node.style.width = `${this.model.prop.w}px`
+			card.node.style.height = `${this.model.prop.h}px`
 			card.node.style.position = 'absolute'
 			card.node.style.top = '0px'
 			card.node.style.left = '0px'
 			card.node.style.transform = `translateX(${card.position}px)`
-			card.node.style.transitionProperty = 'transform'
-			card.node.style.transitionDuration = `${this.model.anim.duration}s`
-			card.node.style.transitionTimingFunction = this.model.anim.ease
 		})
 		// nav
 		if (this.model.nav.isEnable) {
@@ -517,26 +527,30 @@ export class KdSimplSlider {
 	}
 
 	handleNextClick() {
-		if (this.model.isLoop && this.model.card.active == (this.model.card.total - 1)) {
-			this.model.card.active = 0
+		this.model.prop.dir = 'next'
+		if (this.model.isLoop && this.model.prop.active == (this.model.prop.total - 1)) {
+			this.model.prop.active = 0
 		} else {
-			this.model.card.active += 1
+			this.model.prop.active += 1
 		}
 		this.updateModel()
 		this.updateView()
 	}
 
 	handlePrevClick() {
-		if (this.model.isLoop && this.model.card.active == 0) {
-			this.model.card.active = this.model.card.total - 1
+		this.model.prop.dir = 'prev'
+		if (this.model.isLoop && this.model.prop.active == 0) {
+			this.model.prop.active = this.model.prop.total - 1
 		} else {
-			this.model.card.active -= 1
+			this.model.prop.active -= 1
 		}
 		this.updateModel()
 		this.updateView()
 	}
+
 	handlePagClick(num) {
-		this.model.card.active = num
+
+		this.model.prop.active = num
 		this.updateModel()
 		this.updateView()
 	}
@@ -544,8 +558,15 @@ export class KdSimplSlider {
 
 	doAnimView() {
 		this.model.cards.forEach(card => {
+			card.node.style.transitionProperty = ''
+			card.node.style.transitionDuration = ''
+			card.node.style.transitionTimingFunction = ''
 
-			card.node.style.opacity = card.opacity
+			if (card.isMove) {
+				card.node.style.transitionProperty = 'transform'
+				card.node.style.transitionDuration = `${this.model.anim.duration}s`
+				card.node.style.transitionTimingFunction = this.model.anim.ease
+			}
 			card.node.style.transform = `translateX(${card.position}px)`
 		})
 	}
@@ -616,7 +637,7 @@ export class KdSimplSlider {
 			wrap.buttons.splice(1, (wrap.buttons.length - 1))
 			wrap.buttons[0].clickHandler = null
 		}))
-		this.model.card.active = 0
+		this.model.prop.active = 0
 	}
 
 	get currentViewport() {
