@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		],
 		animation: {
 			duration: 0.9,
-			ease: 'cubic-bezier(.21,.21,.27,1.83)' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
+			ease: 'ease-in-out' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
 		}
 	}
 
@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		autoplay: {
 			isEnable: true,
 			delay: 4,
+			isPlayAfterStop: true,
+			delayPlayAfterStop: 10,
 		},
 		breakpoints: [
 			{
@@ -70,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				minWidth: 1384,
 				slides: 4,
 				space: 0
-
 			},
 			{
 				maxWidth: 1384,

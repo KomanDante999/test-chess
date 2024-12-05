@@ -9,7 +9,8 @@ export class KdSimplSlider {
 			this.handleNextClick = this.handleNextClick.bind(this)
 			this.handlePrevClick = this.handlePrevClick.bind(this)
 			this.handlePagClick = this.handlePagClick.bind(this)
-
+			this.intervalTimerId = null
+			this.timeoutId = null
 			// events
 			window.addEventListener('load', () => {
 				let sliderStatus = this.doEnabling()
@@ -18,9 +19,11 @@ export class KdSimplSlider {
 					this.setModel()
 					this.setView()
 
+					if (this.model.autoplay.isEnable) {
+						this.doAutoplay()
+					}
 				}
 			})
-
 			window.addEventListener('resize', () => {
 
 				let sliderStatus = this.doEnabling()
@@ -30,6 +33,9 @@ export class KdSimplSlider {
 					this.cleanModel()
 					this.setModel()
 					this.setView()
+					if (this.model.autoplay.isEnable) {
+						this.doAutoplay()
+					}
 				}
 
 				if (sliderStatus == 'clean') {
@@ -112,6 +118,8 @@ export class KdSimplSlider {
 			autoplay: {
 				isEnable: false,
 				delay: 4,
+				isPlayAfterStop: true,
+				delayPlayAfterStop: 10,
 			},
 			anim: {
 				duration: 0.5,
@@ -131,6 +139,8 @@ export class KdSimplSlider {
 		if (params.autoplay !== undefined) {
 			if (params.autoplay.isEnable !== undefined) { this.model.autoplay.isEnable = params.autoplay.isEnable }
 			if (params.autoplay.delay !== undefined) { this.model.autoplay.delay = params.autoplay.delay }
+			if (params.autoplay.isPlayAfterStop !== undefined) { this.model.autoplay.isPlayAfterStop = params.autoplay.isPlayAfterStop }
+			if (params.autoplay.delayPlayAfterStop !== undefined) { this.model.autoplay.delayPlayAfterStop = params.autoplay.delayPlayAfterStop }
 		}
 		if (params.animation.duration) { this.model.anim.duration = params.animation.duration }
 		if (params.animation.ease) { this.model.anim.ease = params.animation.ease }
@@ -314,7 +324,6 @@ export class KdSimplSlider {
 			this.updateCountModel()
 		}
 
-		console.log(this.model);
 	}
 
 	indexCardModel() {
@@ -326,26 +335,17 @@ export class KdSimplSlider {
 				item.index = index
 			})
 
-		if (this.model.isLoop) {
-			this.model.cards
-				.filter(item => item.order < this.model.prop.active)
-				.forEach((item, index) => {
-					item.index = index + lengthArr
-				})
-
-			this.model.cards.forEach(item => {
-				if (item.index == (this.model.prop.total - 1)) {
-					item.index = -1
-				}
+		this.model.cards
+			.filter(item => item.order < this.model.prop.active)
+			.forEach((item, index) => {
+				item.index = index + lengthArr
 			})
 
-		} else {
-			this.model.cards
-				.filter(item => item.order < this.model.prop.active)
-				.forEach((item, index) => {
-					item.index = -(index + 1)
-				})
-		}
+		this.model.cards.forEach(item => {
+			if (item.index == (this.model.prop.total - 1)) {
+				item.index = -1
+			}
+		})
 	}
 
 	positionCardModel() {
@@ -359,7 +359,6 @@ export class KdSimplSlider {
 		this.model.cards.forEach(item => {
 			item.isMove = false
 			if (item.index >= 0 && item.index < this.model.prop.num) {
-				console.log(item.index);
 				item.isMove = true
 			}
 			if (this.model.prop.dir == 'next' && item.index == -1) {
@@ -527,6 +526,14 @@ export class KdSimplSlider {
 	}
 
 	handleNextClick() {
+		// stop autoplay
+		if (this.model.autoplay.isEnable) {
+			this.stopAutoplay()
+		}
+		this.moveNext()
+	}
+
+	moveNext() {
 		this.model.prop.dir = 'next'
 		if (this.model.isLoop && this.model.prop.active == (this.model.prop.total - 1)) {
 			this.model.prop.active = 0
@@ -538,7 +545,17 @@ export class KdSimplSlider {
 	}
 
 	handlePrevClick() {
+		// stop autoplay
+		if (this.model.autoplay.isEnable) {
+			this.stopAutoplay()
+		}
+
+		this.movePrev()
+	}
+
+	movePrev() {
 		this.model.prop.dir = 'prev'
+
 		if (this.model.isLoop && this.model.prop.active == 0) {
 			this.model.prop.active = this.model.prop.total - 1
 		} else {
@@ -549,12 +566,56 @@ export class KdSimplSlider {
 	}
 
 	handlePagClick(num) {
+		// stop autoplay
+		if (this.model.autoplay.isEnable) {
+			this.stopAutoplay()
+		}
 
-		this.model.prop.active = num
-		this.updateModel()
-		this.updateView()
+		let n = this.model.prop.active - num
+		let count = 0
+		let durationSave = this.model.anim.duration
+		let easeSave = this.model.anim.ease
+		this.model.anim.duration = 0.1
+		this.model.anim.ease = 'linear'
+
+		this.pagTimerId = setInterval(() => {
+			count += 1
+			if (n < 0) {
+				this.moveNext()
+			} else {
+				this.movePrev()
+			}
+
+			if (count == (Math.abs(n)) - 1) {
+				this.model.anim.duration = 0.3
+			}
+
+			if (count == Math.abs(n)) {
+				this.model.anim.duration = durationSave
+				this.model.anim.ease = easeSave
+				clearInterval(this.pagTimerId)
+			}
+		}, 100)
 	}
 
+	doAutoplay() {
+		this.intervalTimerId = setInterval(() => {
+			this.moveNext()
+		}, this.model.autoplay.delay * 1000)
+	}
+
+	stopAutoplay() {
+		clearInterval(this.intervalTimerId)
+		this.intervalTimerId = null
+		// restart autoplay
+		if (this.model.autoplay.isPlayAfterStop) {
+			clearTimeout(this.timeoutId)
+			this.timeoutId = null
+			this.timeoutId = setTimeout(() => {
+				this.doAutoplay()
+			}, this.model.autoplay.delayPlayAfterStop * 1000)
+		}
+	}
 
 	doAnimView() {
 		this.model.cards.forEach(card => {
@@ -587,6 +648,13 @@ export class KdSimplSlider {
 			card.node.style.transform = ''
 			card.node.style.opacity = ''
 		})
+		// clean autoplay
+		if (this.model.autoplay.isEnable) {
+			clearInterval(this.intervalTimerId)
+			if (this.model.autoplay.isPlayAfterStop) {
+				clearTimeout(this.timeoutId)
+			}
+		}
 		// nav
 		if (this.model.nav.isEnable) {
 			// REMOVE EVENT SLIDER
@@ -616,6 +684,13 @@ export class KdSimplSlider {
 	}
 
 	cleanModel() {
+		// clean autoplay
+		if (this.model.autoplay.isEnable) {
+			this.intervalTimerId = null
+			if (this.model.autoplay.isPlayAfterStop) {
+				this.timeoutId = null
+			}
+		}
 		// nav
 		if (this.model.nav.isEnable) {
 			// REMOVE EVENT SLIDER
