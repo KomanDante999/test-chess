@@ -2,35 +2,35 @@ export class KdSimplSlider {
 	_currentViewport = null
 
 	constructor(params) {
-		this.$Slider = document.getElementById(params.id)
+		this.$Slider = document.getElementById(params.id)                // первоначальная инициализация слайдера
 		if (this.$Slider) {
 
 			this.setModelDef(params)
-			this.handleNextClick = this.handleNextClick.bind(this)
+			this.handleNextClick = this.handleNextClick.bind(this)       // передача контекста this в функции событий на кнопках управления
 			this.handlePrevClick = this.handlePrevClick.bind(this)
 			this.handlePagClick = this.handlePagClick.bind(this)
-			this.intervalTimerId = null
-			this.timeoutId = null
+			this.intervalTimerId = null                             // таймаут автолистания
+			this.timeoutId = null                                   // таймаут возобновления автолистания
 			// events
 			window.addEventListener('load', () => {
-				let sliderStatus = this.doEnabling()
+				let sliderStatus = this.doEnabling()         // запуск слайдера в зависимости от параметров
 
 				if (sliderStatus == 'enable') {
-					this.setModel()
-					this.setView()
+					this.setModel()                           // создание модели
+					this.setView()                            // вывод представления
 
-					if (this.model.autoplay.isEnable) {
+					if (this.model.autoplay.isEnable) {       // запуск автолистания в зависимости от параметров
 						this.doAutoplay()
 					}
 				}
 			})
-			window.addEventListener('resize', () => {
+			window.addEventListener('resize', () => {    // перезапуск при ресайзе
 
 				let sliderStatus = this.doEnabling()
 
-				if (sliderStatus == 'enable') {
-					this.cleanView()
-					this.cleanModel()
+				if (sliderStatus == 'enable') {           // перезапуск слайдера
+					this.cleanView()                       // очистка представления
+					this.cleanModel()                      // очистка модели
 					this.setModel()
 					this.setView()
 					if (this.model.autoplay.isEnable) {
@@ -38,7 +38,7 @@ export class KdSimplSlider {
 					}
 				}
 
-				if (sliderStatus == 'clean') {
+				if (sliderStatus == 'clean') {          // остановка слайдера с полной очисткой
 					this.cleanView()
 					this.cleanModel()
 					this.model.status = 'disable'
@@ -48,10 +48,10 @@ export class KdSimplSlider {
 		}
 	}
 
-	doEnabling() {
-		this.model.mediaRange.forEach(point => {
+	doEnabling() {                                           // определение статуса слайдера на брекпоинтах, возвращает this.model.status 
+		this.model.mediaRange.forEach(point => {               // enable, clean или disable
 
-			if (this.model.mobilFirst) {
+			if (this.model.mobilFirst) {                         // учет mobile first или desktop first
 				if (this.currentViewport >= point.minWidth && this.currentViewport < point.maxWidth) {
 					point.status = 'enable'
 				} else {
@@ -79,8 +79,8 @@ export class KdSimplSlider {
 
 	// ======= MODEL ========
 
-	setModelDef(params) {
-		this.model = {
+	setModelDef(params) {                // создание базовой модели
+		this.model = {                     // запускается после загрузки страницы, не изменяется при включении/отключении слайдера
 			wrap: {
 				node: null,
 				w: null,
@@ -104,31 +104,31 @@ export class KdSimplSlider {
 				isEnable: false,
 			},
 			mediaRange: [],
-			prop: {
-				total: null,  // total cards
-				w: null,
-				h: null,
-				num: null,    // number of visible slides
-				space: null,
-				active: 0,    // active order card 
-				dir: null,
+			prop: {                     // динамические свойства (зависят от viewport и params)
+				total: null,              // всего слайдов
+				w: null,                  // текущая ширина слайда (рассчитывается)
+				h: null,                  // текущая высота слайда (берется высота оболочки wrap)
+				num: null,                // число видимых слайдов
+				space: null,              // отступы между слайдами
+				active: 0,                // номер (order) текущего активного слайда
+				dir: null,                // направление движения слайдов next или prev (задается кнопками управления)
 			},
 			mobilFirst: true,
-			isLoop: false,
-			autoplay: {
+			isLoop: false,              // зацикливание
+			autoplay: {                 // параметры автоматического листания
 				isEnable: false,
 				delay: 4,
 				isPlayAfterStop: true,
 				delayPlayAfterStop: 10,
 			},
-			anim: {
+			anim: {                     // параметры анимации
 				duration: 0.5,
-				ease: 'ease-in-out' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
+				ease: 'ease-in-out'       // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
 			},
-			status: 'disable', // 'enable', 'first', 'remove'
+			status: 'disable',          // состояние слайдера enable, clean или disable
 		}
 		// params
-		if (params.mobilFirst !== undefined) { this.model.mobilFirst = params.mobilFirst }
+		if (params.mobilFirst !== undefined) { this.model.mobilFirst = params.mobilFirst }                       // установка параметров из настроек пользователя
 		if (params.navigationEnable !== undefined) { this.model.nav.isEnable = params.navigationEnable }
 		if (params.paginationEnable !== undefined) { this.model.pag.isEnable = params.paginationEnable }
 		if (params.counterEnable !== undefined) { this.model.count.isEnable = params.counterEnable }
@@ -138,6 +138,7 @@ export class KdSimplSlider {
 		if (params.loop !== undefined) { this.model.isLoop = params.loop }
 		if (params.autoplay !== undefined) {
 			if (params.autoplay.isEnable !== undefined) { this.model.autoplay.isEnable = params.autoplay.isEnable }
+			if (this.model.autoplay.isEnable) { this.model.isLoop = true }     // включение зацикливания при включенном автовоспроизведении
 			if (params.autoplay.delay !== undefined) { this.model.autoplay.delay = params.autoplay.delay }
 			if (params.autoplay.isPlayAfterStop !== undefined) { this.model.autoplay.isPlayAfterStop = params.autoplay.isPlayAfterStop }
 			if (params.autoplay.delayPlayAfterStop !== undefined) { this.model.autoplay.delayPlayAfterStop = params.autoplay.delayPlayAfterStop }
@@ -146,27 +147,28 @@ export class KdSimplSlider {
 		if (params.animation.ease) { this.model.anim.ease = params.animation.ease }
 
 		// breakpoints
-		params.breakpoints.forEach(point => {
+		params.breakpoints.forEach(point => {                        // расчет брекпоитов
 			if (!point.disable) {
 				this.model.mediaRange.push({
 					maxWidth: point.maxWidth,
 					minWidth: point.minWidth,
 					slides: (point.slides == undefined || point.slides == 0) ? 1 : point.slides,
 					space: (point.space == undefined) ? 0 : point.space,
-					status: 'disable', // 'enable', 'first', 'remove',
+					status: 'disable',
 				})
 			}
 		})
 		this.model.mediaRange.sort((a, b) => b.maxWidth - a.maxWidth)
-		// add elements
-		this.raw = Array.from(this.$Slider.querySelectorAll('[data-kd-slider]'))
 
-		this.raw.forEach(elem => {
+		// add elements
+		this.raw = Array.from(this.$Slider.querySelectorAll('[data-kd-slider]'))  // поиск в разметке всех активных элементов слайдера (имеют атрибут data-kd-slider)
+
+		this.raw.forEach(elem => {                     // разбор найденных элементов по значению атрибута data-kd-slider
 			if (elem.dataset.kdSlider == 'wrap') {
-				this.model.wrap.node = elem
+				this.model.wrap.node = elem                // оболочка слайдов
 			}
 			// cards
-			if (elem.dataset.kdSlider == 'card') {
+			if (elem.dataset.kdSlider == 'card') {      // слайды
 				this.model.cards.push({
 					node: elem,
 					order: null,
@@ -177,7 +179,7 @@ export class KdSimplSlider {
 				})
 			}
 			// nav
-			if (this.model.nav.isEnable) {
+			if (this.model.nav.isEnable) {               // кнопки навигации, поддерживается несколько кнопок next и prev
 				if (elem.dataset.kdSlider == 'next') {
 					this.model.nav.next.push({
 						node: elem,
@@ -192,23 +194,23 @@ export class KdSimplSlider {
 				}
 			}
 			// pag
-			if (this.model.pag.isEnable) {
-				if (elem.dataset.kdSlider == 'pag-wrap') {
-					this.model.pag.wrap.push({
-						node: elem,
+			if (this.model.pag.isEnable) {                 // оболочка кнопок пагинации, поддерживается несколько оболочек
+				if (elem.dataset.kdSlider == 'pag-wrap') {   // в разметке достаточно задать одну кнопку пагинации
+					this.model.pag.wrap.push({                 // остальные будут созданы автоматически 
+						node: elem,                              // в зависимости от общего числа слайдов и количества видимых слайдов
 						buttons: [],
 					})
 				}
 			}
 			// count
-			if (this.model.count.isEnable) {
-				if (elem.dataset.kdSlider == 'count-current') {
+			if (this.model.count.isEnable) {                    // счетчик слайдов, поддерживается несколько счетчиков
+				if (elem.dataset.kdSlider == 'count-current') {   // элемент вывода текущего слайда
 					this.model.count.current.push({
 						node: elem,
 						value: null,
 					})
 				}
-				if (elem.dataset.kdSlider == 'count-total') {
+				if (elem.dataset.kdSlider == 'count-total') {     // элемент вывода общего количества слайдов
 					this.model.count.total.push({
 						node: elem,
 						value: null,
@@ -216,16 +218,18 @@ export class KdSimplSlider {
 				}
 			}
 		})
-		// cards
 		this.raw = []
-		this.model.cards.forEach((card, index) => {
-			card.order = index
-			card.index = index
-		})
-		this.model.prop.total = this.model.cards.length
+
+		// cards
+		this.model.cards.forEach((card, index) => {           // первоначальное упорядочивание слайдов
+			card.order = index                                  // order отражает положение слайда в разметке - 0,1,2,3...
+			card.index = index                                  // index отражает, где должен находиться слайд после срабатывания событий на кнопках управления
+		})                                                    // используется схема: -1 |0 1 2| 3 4... , где |0 1 2| - видимые слайды, а в позицию -1 всегда переносится последний слайд
+
+		this.model.prop.total = this.model.cards.length     // общее число слайдов
 
 		// pag
-		if (this.model.pag.isEnable) {
+		if (this.model.pag.isEnable) {                     // поиск первой кнопки пагинации в разметке (остальные создаются автоматически)
 			this.model.pag.wrap.forEach(wrap => {
 				wrap.buttons.push({
 					node: wrap.node.querySelector('[data-kd-slider="pag-btn"]'),
@@ -244,28 +248,28 @@ export class KdSimplSlider {
 			if (point.status == 'enable') {
 
 				// wrap
-				this.model.wrap.w = this.model.wrap.node.getBoundingClientRect().width
+				this.model.wrap.w = this.model.wrap.node.getBoundingClientRect().width         // получение текущих размеров оболочки wrap   
 				this.model.wrap.h = this.model.wrap.node.getBoundingClientRect().height
 
 				// card
-				this.model.prop.space = point.space
+				this.model.prop.space = point.space             // получение текущих значений отступов и числа видимых слайдов на данном брекпоинте
 				this.model.prop.num = point.slides
-				if (this.model.prop.num == 1) {
+				if (this.model.prop.num == 1) {                 // если имеется только один видимый слайд, его ширина равна ширине оболочки wrap
 					this.model.prop.w = this.model.wrap.w
-				} else {
+				} else {                                        // расчет ширины слайда в зависимости от отступов и числа видимых слайдов
 					this.model.prop.w = Math.round((this.model.wrap.w - this.model.prop.space) / this.model.prop.num)
 				}
-				this.model.prop.h = this.model.wrap.h
+				this.model.prop.h = this.model.wrap.h           // высота слайда регулируется высотой оболочки wrap
 
 				// cards
-				this.indexCardModel()
+				this.indexCardModel()                           // расчет положения слайдов
 				this.positionCardModel()
 
 				// nav
 				if (this.model.nav.isEnable) {
 					this.updateNavModel()
 					// ADD EVENT SLIDER
-					this.model.nav.next.forEach(btn => {
+					this.model.nav.next.forEach(btn => {          // распределение обработчика событий на кнопки управления
 						btn.clickHandler = this.handleNextClick
 					})
 					// ADD EVENT SLIDER
@@ -275,30 +279,30 @@ export class KdSimplSlider {
 				}
 
 				// pag
-				if (this.model.pag.isEnable) {
+				if (this.model.pag.isEnable) {              // создание и нумерация кнопок пагинации
 
 					this.model.pag.wrap.forEach(wrap => {
 						for (let i = 1; i < (this.model.prop.total - (this.model.prop.num - 1)); i++) {
 							wrap.buttons.push({
-								node: wrap.buttons[0].node.cloneNode(true),
-								num: i,
-								isActive: false,
-								clickHandler: null,
+								node: wrap.buttons[0].node.cloneNode(true),    // клонируется элемент, найденный в разметке
+								num: i,                                        // номер соответствует order слайда
+								isActive: false,                               // состояние кнопки (активная блокируется и получает CSS класс active-btn)
+								clickHandler: null,                            // обработчик события
 							})
 						}
 						// ADD EVENT SLIDER
-						wrap.buttons.forEach(btn => {
+						wrap.buttons.forEach(btn => {                      // распределение обработчика событий на кнопки пагинации
 							btn.clickHandler = () => this.handlePagClick(btn.num)
 						})
 					})
-					this.updatePagModel()
+					this.updatePagModel()                                // актуализация состояния пагинации
 				}
 
 				// count
 				if (this.model.count.isEnable) {
-					this.updateCountModel()
+					this.updateCountModel()                          // актуализация счетчика (текущий активный слайд)
 					this.model.count.total.forEach(item => {
-						item.value = this.model.prop.total
+						item.value = this.model.prop.total             // общее количество слайдов      
 					})
 				}
 
@@ -306,7 +310,7 @@ export class KdSimplSlider {
 		})
 	}
 
-	updateModel() {
+	updateModel() {                             // обновление модели при срабатывании события
 		// cards
 		this.indexCardModel()
 		this.positionCardModel()
@@ -326,10 +330,11 @@ export class KdSimplSlider {
 
 	}
 
-	indexCardModel() {
+	indexCardModel() {            // расчет положения слайдов после обработки события
 
 		let lengthArr = this.model.cards.filter(item => item.order >= this.model.prop.active).length
-		this.model.cards
+
+		this.model.cards                                            // псевдо-ротация массива слайдов согласно схемы -1 |0 1 2| 3 4 ...
 			.filter(item => item.order >= this.model.prop.active)
 			.forEach((item, index) => {
 				item.index = index
@@ -348,14 +353,14 @@ export class KdSimplSlider {
 		})
 	}
 
-	positionCardModel() {
-
-		this.model.cards.forEach(item => {
+	positionCardModel() {                      // позиционирование слайдов в зависимости от index
+		// слайд с index=0 получает позицию 0 относительно wrap и далее позиция сдвигается на ширину слайда + отступ
+		this.model.cards.forEach(item => {      // невидимые слайды уходят за правую границу wrap, слайд с index=-1 уходит за левую границу wrap
 			item.position = `${this.model.prop.w * item.index + this.model.prop.space * item.index}`
 		})
 	}
 
-	animationCardModel() {
+	animationCardModel() {                 // расчет того, какие слайды получат время анимации, а какие будут перенесены мгновенно
 		this.model.cards.forEach(item => {
 			item.isMove = false
 			if (item.index >= 0 && item.index < this.model.prop.num) {
@@ -370,7 +375,7 @@ export class KdSimplSlider {
 		})
 	}
 
-	updateNavModel() {
+	updateNavModel() {                          // расчет блокировки кнопок навигации, навешивается класс disable-btn (если нет зацикливания)
 		if (!this.model.isLoop) {
 			if (this.model.prop.active == (this.model.prop.total - this.model.prop.num)) {
 				this.model.nav.next.forEach(btn => {
@@ -395,7 +400,7 @@ export class KdSimplSlider {
 		}
 	}
 
-	updatePagModel() {
+	updatePagModel() {                            // расчет активной кнопки пагинации (должна совпадать с активным слайдом)
 		this.model.pag.wrap.forEach(wrap => {
 			wrap.buttons.forEach(btn => {
 				btn.isActive = false
@@ -406,21 +411,21 @@ export class KdSimplSlider {
 		})
 	}
 
-	updateCountModel() {
+	updateCountModel() {                          // расчет показаний счетчика слайдов
 		this.model.count.current.forEach(item => {
 			item.value = this.model.prop.active + 1
 		})
 	}
 	// ======= VIEW ========
 
-	setView() {
+	setView() {                                          // реализация модели
 		// slider
-		this.model.wrap.node.style.display = 'block'
-		this.model.wrap.node.style.position = 'relative'
+		this.model.wrap.node.style.display = 'block'               // добавление критически необходимых стилей
+		this.model.wrap.node.style.position = 'relative'           // на случай если они не добавляются через CSS
 		this.model.wrap.node.style.overflow = 'hidden'
 		// cards
-		this.model.cards.forEach(card => {
-			card.node.style.width = `${this.model.prop.w}px`
+		this.model.cards.forEach(card => {                         // все слайды позиционируются в левом верхнем углу wrap
+			card.node.style.width = `${this.model.prop.w}px`         // и далее распределяются и двигаются с помощью translate
 			card.node.style.height = `${this.model.prop.h}px`
 			card.node.style.position = 'absolute'
 			card.node.style.top = '0px'
@@ -429,10 +434,10 @@ export class KdSimplSlider {
 		})
 		// nav
 		if (this.model.nav.isEnable) {
-			this.updateNavView()
+			this.updateNavView()                                // обновление представления кнопок навигации
 
 			// ADD EVENT SLIDER
-			this.model.nav.next.forEach(btn => {
+			this.model.nav.next.forEach(btn => {                // навешивание событий на кнопки навигации
 				btn.node.addEventListener('click', btn.clickHandler)
 			})
 			// ADD EVENT SLIDER
@@ -443,26 +448,26 @@ export class KdSimplSlider {
 
 		// pag
 		if (this.model.pag.isEnable) {
-			this.model.pag.wrap.forEach(wrap => {
+			this.model.pag.wrap.forEach(wrap => {           // добавление недостающих кнопок пагинации в DOM
 				wrap.buttons.forEach(btn => {
 					wrap.node.append(btn.node)
 					// ADD EVENT SLIDER
-					btn.node.addEventListener('click', btn.clickHandler)
+					btn.node.addEventListener('click', btn.clickHandler)  // навешивание событий на кнопки пагинации
 				})
 			})
-			this.updatePagView()
+			this.updatePagView()                             // обновление представления кнопок пагинации
 		}
 
 		// count
 		if (this.model.count.isEnable) {
-			this.updateCountView()
+			this.updateCountView()                          // обновление представления счетчика
 			this.model.count.total.forEach(item => {
 				item.node.textContent = `${item.value}`
 			})
 		}
 	}
 
-	updateView() {
+	updateView() {                          // обновление представления после срабатывания события
 
 		if (this.model.nav.isEnable) {
 			this.updateNavView()
@@ -525,26 +530,29 @@ export class KdSimplSlider {
 		})
 	}
 
-	handleNextClick() {
+	// ======= HANDLERS ========
+
+	handleNextClick() {                      // обработчик события клика по кнопке next
 		// stop autoplay
-		if (this.model.autoplay.isEnable) {
+		if (this.model.autoplay.isEnable) {   // остановка автоматического воспроизведения
 			this.stopAutoplay()
 		}
 		this.moveNext()
 	}
 
-	moveNext() {
+	moveNext() {                          // драйвер события next
 		this.model.prop.dir = 'next'
-		if (this.model.isLoop && this.model.prop.active == (this.model.prop.total - 1)) {
+
+		if (this.model.prop.active == (this.model.prop.total - 1)) {  // возврат в начало при достижении конца слайдов
 			this.model.prop.active = 0
 		} else {
-			this.model.prop.active += 1
+			this.model.prop.active += 1         // активация следующего слайда
 		}
 		this.updateModel()
 		this.updateView()
 	}
 
-	handlePrevClick() {
+	handlePrevClick() {                   // обработчик события клика по кнопке prev
 		// stop autoplay
 		if (this.model.autoplay.isEnable) {
 			this.stopAutoplay()
@@ -553,10 +561,10 @@ export class KdSimplSlider {
 		this.movePrev()
 	}
 
-	movePrev() {
+	movePrev() {                             // драйвер события prev
 		this.model.prop.dir = 'prev'
 
-		if (this.model.isLoop && this.model.prop.active == 0) {
+		if (this.model.prop.active == 0) {
 			this.model.prop.active = this.model.prop.total - 1
 		} else {
 			this.model.prop.active -= 1
@@ -565,20 +573,20 @@ export class KdSimplSlider {
 		this.updateView()
 	}
 
-	handlePagClick(num) {
+	handlePagClick(num) {                        // обработчик события клика по кнопке пагинации (передается номер нажатой кнопки)
 		// stop autoplay
 		if (this.model.autoplay.isEnable) {
 			this.stopAutoplay()
 		}
 
-		let n = this.model.prop.active - num
+		let n = this.model.prop.active - num            // число слайдов, которые необходимо пролистать
 		let count = 0
-		let durationSave = this.model.anim.duration
+		let durationSave = this.model.anim.duration     // сохраняем значение длительности анимации и функции времени по умолчанию
 		let easeSave = this.model.anim.ease
-		this.model.anim.duration = 0.1
+		this.model.anim.duration = 0.1                 // временно увеличиваем скорость анимации
 		this.model.anim.ease = 'linear'
 
-		this.pagTimerId = setInterval(() => {
+		this.pagTimerId = setInterval(() => {          // пролистываем необходимое количество слайдов в зависимости от направления
 			count += 1
 			if (n < 0) {
 				this.moveNext()
@@ -586,29 +594,29 @@ export class KdSimplSlider {
 				this.movePrev()
 			}
 
-			if (count == (Math.abs(n)) - 1) {
+			if (count == (Math.abs(n)) - 1) {        // последний слайд чуть замедляем
 				this.model.anim.duration = 0.3
 			}
 
-			if (count == Math.abs(n)) {
+			if (count == Math.abs(n)) {                     // восстанавливаем значение длительности анимации и функции времени по умолчанию
 				this.model.anim.duration = durationSave
 				this.model.anim.ease = easeSave
-				clearInterval(this.pagTimerId)
+				clearInterval(this.pagTimerId)              // остановка и удаление setInterval
 			}
 		}, 100)
 	}
 
-	doAutoplay() {
+	doAutoplay() {                                     // драйвер автовоспроизведения
 		this.intervalTimerId = setInterval(() => {
 			this.moveNext()
 		}, this.model.autoplay.delay * 1000)
 	}
 
-	stopAutoplay() {
+	stopAutoplay() {                              // прерывание автовоспроизведения
 		clearInterval(this.intervalTimerId)
 		this.intervalTimerId = null
 		// restart autoplay
-		if (this.model.autoplay.isPlayAfterStop) {
+		if (this.model.autoplay.isPlayAfterStop) {      // перезапуск автовоспроизведения при отсутствии событий
 			clearTimeout(this.timeoutId)
 			this.timeoutId = null
 			this.timeoutId = setTimeout(() => {
@@ -617,13 +625,13 @@ export class KdSimplSlider {
 		}
 	}
 
-	doAnimView() {
+	doAnimView() {                                 // анимация слайдов
 		this.model.cards.forEach(card => {
 			card.node.style.transitionProperty = ''
 			card.node.style.transitionDuration = ''
 			card.node.style.transitionTimingFunction = ''
 
-			if (card.isMove) {
+			if (card.isMove) {                                       // параметры transition получают только слайды, имеющие isMove=true
 				card.node.style.transitionProperty = 'transform'
 				card.node.style.transitionDuration = `${this.model.anim.duration}s`
 				card.node.style.transitionTimingFunction = this.model.anim.ease
@@ -634,7 +642,7 @@ export class KdSimplSlider {
 
 	// ===== CLEAN ====
 
-	cleanView() {
+	cleanView() {                                        // очистка представления
 		this.model.wrap.node.style.display = ''
 		this.model.wrap.node.style.position = ''
 		this.model.wrap.node.style.overflow = ''
@@ -683,7 +691,7 @@ export class KdSimplSlider {
 		}
 	}
 
-	cleanModel() {
+	cleanModel() {                                      // очистка модели
 		// clean autoplay
 		if (this.model.autoplay.isEnable) {
 			this.intervalTimerId = null

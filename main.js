@@ -13,32 +13,38 @@ document.addEventListener('DOMContentLoaded', () => {
 		speedAnimation: 2.1,
 	}
 
-	// параметры слайдера STAGES 
+	// slider parameters STAGES
 	const paramsKdSliderStages = {
-		id: 'kdSliderStages',
-		navigationEnable: true,
-		navigationDisableClass: 'disable-btn',
-		paginationEnable: true,
-		paginationActiveClass: 'active-btn',
-		counterEnable: false,
-		mobilFirst: false,
-		loop: false,
+		id: 'kdSliderStages',                      // точка входа
+		navigationEnable: true,                    // включение кнопок навигации (добавьте необходимую разметку)
+		navigationDisableClass: 'disable-btn',     // CSS класс, который будет добавлен к заблокированной кнопки навигации
+		paginationEnable: true,                    // включение кнопок пагинации (добавьте необходимую разметку)
+		paginationActiveClass: 'active-btn',       // CSS класс, который будет добавлен к активной кнопки пагинации
+		counterEnable: false,                      // включение счетчика слайдов (добавьте необходимую разметку)
+		loop: false,                               // включение зацикливания слайдов
 		autoplay: {
-			isEnable: false,
-			delay: null,
+			isEnable: false,                         // включение автоматического листания слайдов (прерывается по клику на кнопки управление)
+			delay: null,                             // таймаут между слайдами
+			isPlayAfterStop: false,                  // включение запуска автоматического листания после прерывания
+			delayPlayAfterStop: null,                // таймаут до запуска автоматического листания после прерывания
 		},
-		breakpoints: [
+		animation: {
+			duration: 0.9,                           // длительность анимации слайдов
+			ease: 'ease-in-out'                      // временная функция анимации   cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
+		},
+		mobilFirst: false,                         // поведение медиа-запросов в зависимости от способа адаптивной верстки - mobile first или desktop first
+		breakpoints: [                             // поведение слайдера в зависимости от ширины viewport 
 			{
-				maxWidth: Infinity,
-				minWidth: 1024,
-				disable: true,
+				maxWidth: Infinity,                    // начальная ширина viewport
+				minWidth: 1024,                        // конечная ширина viewport
+				disable: true,                         // полное отключение слайдера на данном промежутке с очисткой всех изменений в разметке
 			},
 			{
 				maxWidth: 1024,
 				minWidth: 635,
-				slides: 2,
-				space: 20
-			},
+				slides: 2,                            // число одновременно показываемых слайдов на данном промежутке
+				space: 20                             // отступы между слайдами на данном промежутке
+			},                                      // ширина слайда рассчитывается и устанавливается автоматически
 			{
 				maxWidth: 635,
 				minWidth: 0,
@@ -46,13 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				space: 20
 			},
 		],
-		animation: {
-			duration: 0.9,
-			ease: 'ease-in-out' // cubic-bezier(.21,.21,.27,1.83), ease, ease-in, ease-out, ease-in-out, linear
-		}
 	}
 
-	// параметры слайдера PLAYERS 
+	// slider parameters PLAYERS
 	const paramsKdSliderPlayers = {
 		id: 'kdSliderPlayers',
 		navigationEnable: true,
